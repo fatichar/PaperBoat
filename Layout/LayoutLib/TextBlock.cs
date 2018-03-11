@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Text;
+
+namespace LayoutLib
+{
+    class TextBlock : IEnumerable<Word>, IRect
+    {
+        #region public properties
+        public int WordCount { get; }
+        #endregion
+
+        #region private properties
+        private IReadOnlyList<Word> Words { get; }
+        private int Offset { get; }
+        private Rectangle Rect { get; }
+        #endregion
+
+        #region Constructors
+        public TextBlock(IReadOnlyList<Word> Words, int offset, int wordCount)
+        {
+            this.Words = Words;
+
+            if (offset < 0 || offset >= Words.Count)
+            {
+                throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, Words.Count - 1);
+            }
+            if (wordCount < 1 || offset + wordCount >= Words.Count)
+            {
+                throw new ArgumentOutOfRangeException(wordCount, nameof(wordCount), 1, Words.Count - offset);
+            }
+
+            WordCount = wordCount;
+        }
+        #endregion
+
+        #region public methods
+        public Word this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= WordCount)
+                {
+                    throw new ArgumentOutOfRangeException(index, nameof(index), 0, WordCount - 1);
+                }
+                return Words[index];
+            }
+        }
+        #endregion
+
+        #region IEnumerable Impl
+        public IEnumerator<Word> GetEnumerator() => Words.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => Words.GetEnumerator();
+        #endregion
+
+        #region IRect Impl
+        public Rectangle GetRect() => Rect;
+        #endregion
+    }
+}
