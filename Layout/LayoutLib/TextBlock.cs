@@ -19,20 +19,23 @@ namespace LayoutLib
         #endregion
 
         #region Constructors
-        public TextBlock(IReadOnlyList<Word> Words, int offset, int wordCount)
+        public TextBlock(IReadOnlyList<Word> words, int offset, int wordCount)
         {
-            this.Words = Words;
+            this.Words = words;
 
-            if (offset < 0 || offset >= Words.Count)
+            if (offset < 0 || offset >= words.Count)
             {
-                throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, Words.Count - 1);
+                throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, words.Count - 1);
             }
-            if (wordCount < 1 || offset + wordCount >= Words.Count)
+            if (wordCount < 1 || offset + wordCount >= words.Count)
             {
-                throw new ArgumentOutOfRangeException(wordCount, nameof(wordCount), 1, Words.Count - offset);
+                throw new ArgumentOutOfRangeException(wordCount, nameof(wordCount), 1, words.Count - offset);
             }
 
+            Offset = offset;
             WordCount = wordCount;
+
+            Rect = Geometry.GetUnion(words);
         }
         #endregion
 

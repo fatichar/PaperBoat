@@ -10,6 +10,7 @@ namespace LayoutLib
     {
         #region public properties
         public int TextLineCount { get; }
+        public Rectangle TextRect { get; }
         #endregion
 
         #region private properties
@@ -19,7 +20,7 @@ namespace LayoutLib
         #endregion
 
         #region Constructors
-        public Page(IReadOnlyList<TextLine> textLines, int offset, int textLineCount)
+        public Page(Size size, IReadOnlyList<TextLine> textLines, int offset, int textLineCount)
         {
             TextLines = textLines;
 
@@ -32,7 +33,11 @@ namespace LayoutLib
                 throw new ArgumentOutOfRangeException(textLineCount, nameof(textLineCount), 1, textLines.Count - offset);
             }
 
+            Offset = offset;
             TextLineCount = textLineCount;
+
+            TextRect = Geometry.GetUnion(textLines);
+            Rect = new Rectangle(new Point(0, 0), size);
         }
         #endregion
 

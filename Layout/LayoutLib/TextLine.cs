@@ -32,7 +32,10 @@ namespace LayoutLib
                 throw new ArgumentOutOfRangeException(textBlockCount, nameof(textBlockCount), 1, textBlocks.Count - offset);
             }
 
+            Offset = offset;
             TextBlockCount = textBlockCount;
+
+            Rect = Geometry.GetUnion(textBlocks);
         }
         #endregion
 

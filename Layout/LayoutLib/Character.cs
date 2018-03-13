@@ -15,6 +15,14 @@ namespace LayoutLib
         private Rectangle Rect { get; }
         #endregion
 
+        #region Constructors
+        public Character(char value, Rectangle rect)
+        {
+            Value = value;
+            Rect = rect;
+        }
+        #endregion
+
         #region IRect Impl
         public Rectangle GetRect() => Rect;
         #endregion

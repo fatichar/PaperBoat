@@ -19,20 +19,23 @@ namespace LayoutLib
         #endregion
 
         #region Constructors
-        public Word(IReadOnlyList<Character> Chars, int offset, int charCount)
+        public Word(IReadOnlyList<Character> chars, int offset, int charCount)
         {
-            Characters = Chars;
+            Characters = chars;
 
-            if (offset < 0 || offset >= Chars.Count)
+            if (offset < 0 || offset >= chars.Count)
             {
-                throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, Chars.Count - 1);
+                throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, chars.Count - 1);
             }
-            if (charCount < 1 || offset + charCount >= Chars.Count)
+            if (charCount < 1 || offset + charCount >= chars.Count)
             {
-                throw new ArgumentOutOfRangeException(charCount, nameof(charCount), 1, Chars.Count - offset);
+                throw new ArgumentOutOfRangeException(charCount, nameof(charCount), 1, chars.Count - offset);
             }
 
+            Offset = offset;
             CharCount = charCount;
+            
+            Rect = Geometry.GetUnion(chars);
         }
         #endregion
 
