@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace LayoutLib
 {
-    class TextBlock : IEnumerable<Word>, IRect
+    public class TextBlock : IEnumerable<Word>, IRect
     {
+        #region IRect Impl
+        public Rectangle Rect { get; }
+        #endregion
+
         #region public properties
         public int WordCount { get; }
         #endregion
@@ -15,7 +17,6 @@ namespace LayoutLib
         #region private properties
         private IReadOnlyList<Word> Words { get; }
         private int Offset { get; }
-        private Rectangle Rect { get; }
         #endregion
 
         #region Constructors
@@ -57,10 +58,6 @@ namespace LayoutLib
         public IEnumerator<Word> GetEnumerator() => Words.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => Words.GetEnumerator();
-        #endregion
-
-        #region IRect Impl
-        public Rectangle GetRect() => Rect;
         #endregion
     }
 }

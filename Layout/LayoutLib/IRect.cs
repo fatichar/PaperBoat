@@ -4,6 +4,6 @@ namespace LayoutLib
 {
     public interface IRect
     {
-        Rectangle GetRect();
+        Rectangle Rect { get; }
     }
 }

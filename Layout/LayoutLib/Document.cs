@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LayoutLib
+﻿namespace LayoutLib
 {
     public class Document
     {

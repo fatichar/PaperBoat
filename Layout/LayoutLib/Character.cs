@@ -1,30 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace LayoutLib
 {
-    class Character : IRect
+    public class Character : IRect
     {
+        #region IRect Impl
+        public Rectangle Rect { get; }
+        #endregion
+
         #region public properties
-        public char Value { get; }
+        public char Value => Chars[Offset];
         #endregion
 
         #region private properties
-        private Rectangle Rect { get; }
+        private IReadOnlyList<char> Chars { get; }
+        private int Offset { get; }
         #endregion
 
         #region Constructors
-        public Character(char value, Rectangle rect)
+        public Character(IReadOnlyList<char> chars, int offset, Rectangle rect)
         {
-            Value = value;
+            if (offset < 0 || offset >= chars.Count)
+            {
+                throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, chars.Count - 1);
+            }
+
+            Chars = chars;
+            Offset = offset;
             Rect = rect;
         }
-        #endregion
-
-        #region IRect Impl
-        public Rectangle GetRect() => Rect;
         #endregion
     }
 }
