@@ -6,6 +6,7 @@ using LayoutLib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
 namespace PDFLib
 {
@@ -13,6 +14,11 @@ namespace PDFLib
     {
         public static LayoutLib.Document Read(string filePath)
         {
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("", filePath);
+            }
+
             var reader = new PdfReader(filePath);
             var document = new PdfDocument(reader);
 
