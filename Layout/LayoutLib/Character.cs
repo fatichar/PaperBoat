@@ -14,22 +14,26 @@ namespace LayoutLib
         #endregion
 
         #region private properties
-        private IReadOnlyList<char> Chars { get; }
+        private string Chars { get; }
         private int Offset { get; }
         #endregion
 
         #region Constructors
-        public Character(IReadOnlyList<char> chars, int offset, Rectangle rect)
+        public Character(string chars, int offset, Rectangle rect)
         {
-            if (offset < 0 || offset >= chars.Count)
+            if (offset < 0 || offset >= chars.Length)
             {
-                throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, chars.Count - 1);
+                throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, chars.Length - 1);
             }
 
-            Chars = chars;
+            Chars  = chars;
             Offset = offset;
-            Rect = rect;
+            Rect   = rect;
         }
         #endregion
+
+#if DEBUG
+        public override string ToString() => Value.ToString();
+#endif
     }
 }

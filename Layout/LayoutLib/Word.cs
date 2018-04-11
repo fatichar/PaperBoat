@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace LayoutLib
 {
@@ -17,6 +18,9 @@ namespace LayoutLib
         #region private properties
         private IReadOnlyList<Character> Characters { get; }
         private int Offset { get; }
+#if DEBUG            
+        public string Text { get; }
+#endif
         #endregion
 
         #region Constructors
@@ -26,7 +30,7 @@ namespace LayoutLib
             {
                 throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, chars.Count - 1);
             }
-            if (charCount < 1 || offset + charCount >= chars.Count)
+            if (charCount < 1 || offset + charCount > chars.Count)
             {
                 throw new ArgumentOutOfRangeException(charCount, nameof(charCount), 1, chars.Count - offset);
             }
@@ -37,6 +41,9 @@ namespace LayoutLib
             CharCount = charCount;
             
             Rect = Geometry.GetUnion(chars);
+#if DEBUG
+            Text = chars.Skip(offset).Take(CharCount).Select(c => c.ToString()).Aggregate((c1, c2) => c1 + c2);
+#endif
         }
         #endregion
 
@@ -59,5 +66,13 @@ namespace LayoutLib
 
         IEnumerator IEnumerable.GetEnumerator() => Characters.GetEnumerator();
         #endregion
+
+        public static bool CanStartWith(char ch) => !char.IsWhiteSpace(ch);
+
+        public static bool CanEndAt(char ch) => char.IsWhiteSpace(ch);
+
+#if DEBUG            
+        public override string ToString() => Text;
+#endif
     }
 }
