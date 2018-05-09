@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="IRect.fs" />
+    <Compile Include="Geometry.fs" />
     <Compile Include="Character.fs" />
+    <Compile Include="Word.fs" />
   </ItemGroup>
-
 </Project>

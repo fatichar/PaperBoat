@@ -3,4 +3,4 @@
 open System.Drawing
 
 type IRect =
-    abstract member Rect : Rectangle
+    abstract member Rect : Option<Rectangle>
