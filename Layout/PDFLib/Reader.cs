@@ -1,10 +1,10 @@
 ﻿using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using iText.Layout;
 using LayoutLib;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Drawing;
 using System.IO;
 
@@ -18,6 +18,9 @@ namespace PDFLib
             {
                 throw new FileNotFoundException("", filePath);
             }
+            
+            var arr = new ArraySegment<int>();
+            
 
             var reader = new PdfReader(filePath);
             var document = new PdfDocument(reader);
@@ -32,7 +35,7 @@ namespace PDFLib
                 pdfPages.Add(page);
             }
 
-            var pageLayouts = pdfPages.ConvertAll(CreatePage);
+            var pageLayouts = pdfPages.ConvertAll(CreatePage).ToImmutableList();
 
             return new LayoutLib.Document(pageLayouts);
         }
@@ -77,25 +80,23 @@ namespace PDFLib
                 }
                 else
                 {
-                    if (Word.CanEndAt(ch))
+                    if (!Word.CanEndAt(ch)) continue;
+                    
+                    var word = new Word(chars, wordStart, i - wordStart);                        
+                    words.Add(word);
+                    wordStarted = false;
+
+                    if (!TextBlock.CanEndAt(ch)) continue;
+                    
+                    var block = new TextBlock(words, blockStart, words.Count - blockStart);
+                    blocks.Add(block);
+                    blockStart = words.Count;
+
+                    if (TextLine.CanEndAt(ch))
                     {
-                        var word = new Word(chars, wordStart, i - wordStart);                        
-                        words.Add(word);
-                        wordStarted = false;
-
-                        if (TextBlock.CanEndAt(ch))
-                        {
-                            var block = new TextBlock(words, blockStart, words.Count - blockStart);
-                            blocks.Add(block);
-                            blockStart = words.Count;
-
-                            if (TextLine.CanEndAt(ch))
-                            {
-                                var line = new TextLine(blocks, lineStart, blocks.Count - lineStart);
-                                textLines.Add(line);
-                                lineStart = textLines.Count;
-                            }
-                        }
+                        var line = new TextLine(blocks, lineStart, blocks.Count - lineStart);
+                        textLines.Add(line);
+                        lineStart = textLines.Count;
                     }
                 }
             }
@@ -105,7 +106,7 @@ namespace PDFLib
             return page;
         }
 
-        private static IReadOnlyList<LayoutLib.Character> CreateCharacters(string text)
+        private static ImmutableList<LayoutLib.Character> CreateCharacters(string text)
         {
             var characters = new List<LayoutLib.Character>(text.Length);
 

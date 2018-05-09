@@ -1,40 +1,45 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Drawing;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace LayoutLib
 {
     public class Page : IEnumerable<TextLine>, IRect
     {
-        private object textLines;
-
         #region IRect Impl
         public Rectangle Rect { get; }
         #endregion
 
         #region public properties
+        [PublicAPI]
         public int TextLineCount  => TextLines.Count;
+        [PublicAPI]
         public int TextBlockCount => TextBlocks.Count;
+        [PublicAPI]
         public int WordCount      => Words.Count;
+        [PublicAPI]
         public int CharCount      => Chars.Count;
+        [PublicAPI]
         public Rectangle TextRect { get; }
         #endregion
 
         #region private properties
-        private int Offset { get; }
-        private IReadOnlyList<Character> Chars { get; }
-        private IReadOnlyList<Word> Words { get; }
-        private IReadOnlyList<TextBlock> TextBlocks { get; }
-        private IReadOnlyList<TextLine> TextLines { get; }
+        //private int Offset { get; }
+        private ImmutableList<Character> Chars { get; }
+        private ImmutableList<Word> Words { get; }
+        private ImmutableList<TextBlock> TextBlocks { get; }
+        private ImmutableList<TextLine> TextLines { get; }
 
-#if DEBUG            
-        public string Text { get; }
+#if DEBUG
+        private string Text { get; }
 #endif
         #endregion
 
         #region Constructors
-        //public Page(Size size, IReadOnlyList<TextLine> textLines, int offset, int textLineCount)
+        //public Page(Size size, ImmutableList<TextLine> textLines, int offset, int textLineCount)
         //{
         //    TextLines = textLines;
 
@@ -54,7 +59,7 @@ namespace LayoutLib
         //    Rect = new Rectangle(new Point(0, 0), size);
         //}
 
-        public Page(Size size, string text, IReadOnlyList<Character> chars, IReadOnlyList<Word> words, IReadOnlyList<TextBlock> blocks, IReadOnlyList<TextLine> textLines)
+        public Page(Size size, string text, ImmutableList<Character> chars, ImmutableList<Word> words, ImmutableList<TextBlock> blocks, ImmutableList<TextLine> textLines)
         {
             Text          = text;
             Chars         = chars;

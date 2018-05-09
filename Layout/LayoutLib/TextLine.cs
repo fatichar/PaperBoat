@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Drawing;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace LayoutLib
 {
@@ -13,21 +15,24 @@ namespace LayoutLib
         #endregion
 
         #region public properties
+        [PublicAPI]
         public int TextBlockCount { get; }
+        [PublicAPI]
         public int WordCount { get; }
+        [PublicAPI]
         public int CharCount { get; }
         #endregion
 
         #region private properties
-        private IReadOnlyList<TextBlock> TextBlocks { get; }
+        private ImmutableList<TextBlock> TextBlocks { get; }
         private int Offset { get; }
-#if DEBUG            
-        public string Text { get; }
+#if DEBUG
+        private string Text { get; }
 #endif
         #endregion
 
         #region Constructors
-        public TextLine(IReadOnlyList<TextBlock> textBlocks, int offset, int textBlockCount)
+        public TextLine(ImmutableList<TextBlock> textBlocks, int offset, int textBlockCount)
         {
             TextBlocks = textBlocks;
 
@@ -62,22 +67,22 @@ namespace LayoutLib
                 {
                     throw new ArgumentOutOfRangeException(index, nameof(index), 0, TextBlockCount - 1);
                 }
-                return TextBlocks[index];
+                return TextBlocks[Offset + index];
             }
         }
         #endregion
 
         #region IEnumerable Impl
-        public IEnumerator<TextBlock> GetEnumerator() => TextBlocks.GetEnumerator();
+        public IEnumerator<TextBlock> GetEnumerator() => TextBlocks.GetRange(Offset, TextBlockCount).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => TextBlocks.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => TextBlocks.GetRange(Offset, TextBlockCount).GetEnumerator();
+        #endregion
 
+        [PublicAPI]
         public static bool CanEndAt(char ch)
         {
             return ch == '\n';
         }
-        #endregion
-
 #if DEBUG
         public override string ToString() => Text;
 #endif

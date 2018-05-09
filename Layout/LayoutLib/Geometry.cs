@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace LayoutLib
 {
-    internal class Geometry
+    internal static class Geometry
     {
-        internal static Rectangle GetUnion(IReadOnlyList<IRect> iRects)
+        internal static Rectangle GetUnion(IEnumerable<IRect> iRects)
         {
             var rects = iRects.Select(r => r.Rect);
 

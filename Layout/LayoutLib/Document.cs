@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace LayoutLib
 {
@@ -9,11 +10,11 @@ namespace LayoutLib
         #endregion
 
         #region private properties
-        private IReadOnlyList<Page> Pages { get; }
+        private ImmutableList<Page> Pages { get; }
         #endregion
 
         #region constructor
-        public Document(IReadOnlyList<Page> pages)
+        public Document(ImmutableList<Page> pages)
         {
             Pages = pages;
         }

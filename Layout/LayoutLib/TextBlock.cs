@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Drawing;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace LayoutLib
         #endregion
 
         #region private properties
-        private IReadOnlyList<Word> Words { get; }
+        private ImmutableList<Word> Words { get; }
         private int Offset { get; }
 #if DEBUG            
         public string Text { get; }
@@ -26,7 +27,7 @@ namespace LayoutLib
         #endregion
 
         #region Constructors
-        public TextBlock(IReadOnlyList<Word> words, int offset, int wordCount)
+        public TextBlock(ImmutableList<Word> words, int offset, int wordCount)
         {
             Words = words;
 
@@ -60,15 +61,15 @@ namespace LayoutLib
                 {
                     throw new ArgumentOutOfRangeException(index, nameof(index), 0, WordCount - 1);
                 }
-                return Words[index];
+                return Words[Offset + index];
             }
         }
         #endregion
 
         #region IEnumerable Impl
-        public IEnumerator<Word> GetEnumerator() => Words.GetEnumerator();
+        public IEnumerator<Word> GetEnumerator() => Words.GetRange(Offset, WordCount).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => Words.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Words.GetRange(Offset, WordCount).GetEnumerator();
 
         public static bool CanEndAt(char ch)
         {

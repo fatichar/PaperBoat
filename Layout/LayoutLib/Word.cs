@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Drawing;
 using System.Linq;
+
+using JetBrains.Annotations;
 
 namespace LayoutLib
 {
@@ -12,25 +15,26 @@ namespace LayoutLib
         #endregion
 
         #region public properties
+        [PublicAPI]
         public int CharCount { get; }
         #endregion
 
         #region private properties
-        private IReadOnlyList<Character> Characters { get; }
+        private ImmutableList<Character> Characters { get; }
         private int Offset { get; }
-#if DEBUG            
-        public string Text { get; }
+#if DEBUG
+        private string Text { get; }
 #endif
         #endregion
 
         #region Constructors
-        public Word(IReadOnlyList<Character> chars, int offset, int charCount)
+        public Word(ImmutableList<Character> chars, int offset, int charCount)
         {
             if (offset < 0 || offset >= chars.Count)
             {
                 throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, chars.Count - 1);
             }
-            if (charCount < 1 || offset + charCount > chars.Count)
+            if (charCount < 1 || charCount > chars.Count - offset)
             {
                 throw new ArgumentOutOfRangeException(charCount, nameof(charCount), 1, chars.Count - offset);
             }
@@ -48,6 +52,7 @@ namespace LayoutLib
         #endregion
 
         #region public methods
+        [PublicAPI]
         public Character this[int index]
         {
             get
@@ -56,7 +61,7 @@ namespace LayoutLib
                 {
                     throw new ArgumentOutOfRangeException(index, nameof(index), 0, CharCount - 1);
                 }
-                return Characters[index];
+                return Characters[Offset + index];
             }
         }
         #endregion
@@ -64,11 +69,13 @@ namespace LayoutLib
         #region IEnumerable Impl
         public IEnumerator<Character> GetEnumerator() => Characters.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => Characters.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Characters.GetRange(Offset, CharCount).GetEnumerator();
         #endregion
 
+        [PublicAPI]
         public static bool CanStartWith(char ch) => !char.IsWhiteSpace(ch);
 
+        [PublicAPI]
         public static bool CanEndAt(char ch) => char.IsWhiteSpace(ch);
 
 #if DEBUG            
