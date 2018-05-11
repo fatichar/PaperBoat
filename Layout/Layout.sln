@@ -5,6 +5,11 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Layout15", "Layout15\Layout15.csproj", "{92153216-A29E-4E8B-A61A-E228D5C17CAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDFLib", "PDFLib\PDFLib.csproj", "{F899DA6F-8EB0-456B-AC61-984ED578B2B0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92153216-A29E-4E8B-A61A-E228D5C17CAA} = {92153216-A29E-4E8B-A61A-E228D5C17CAA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{92153216-A29E-4E8B-A61A-E228D5C17CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92153216-A29E-4E8B-A61A-E228D5C17CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92153216-A29E-4E8B-A61A-E228D5C17CAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F899DA6F-8EB0-456B-AC61-984ED578B2B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F899DA6F-8EB0-456B-AC61-984ED578B2B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F899DA6F-8EB0-456B-AC61-984ED578B2B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F899DA6F-8EB0-456B-AC61-984ED578B2B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

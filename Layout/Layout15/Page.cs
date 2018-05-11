@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Drawing;
 using System.Linq;
 using JetBrains.Annotations;
 
 namespace Layout15
 {
-    public class Page<TLine, TBlock, TWord, TChar> :  IRect where TLine : TextLine<TBlock, TWord, TChar> where TBlock : TextBlock<TWord, TChar> where TWord : Word<TChar>
+    public class Page : IRect
     {
         #region IRect Impl
         public Rectangle Rect { get; }
@@ -15,23 +13,24 @@ namespace Layout15
 
         #region public properties
         [PublicAPI]
-        public int TextLineCount  => TextLines.Length;
+        public int TextLineCount => TextLines.Length;
         [PublicAPI]
         public int TextBlockCount => TextBlocks.Length;
         [PublicAPI]
-        public int WordCount      => Words.Length;
+        public int WordCount => Words.Length;
         [PublicAPI]
-        public int CharCount      => Chars.Length;
+        public int CharCount => Chars.Length;
         [PublicAPI]
         public Rectangle TextRect { get; }
         #endregion
 
         #region private properties
         //private int Offset { get; }
-        private ImmutableArray<TChar> Chars { get; }
-        private ImmutableArray<TWord> Words { get; }
-        private ImmutableArray<TBlock> TextBlocks { get; }
-        private ImmutableArray<TLine> TextLines { get; }
+        private ImmutableArray<Character> Chars { get; }
+        private ImmutableArray<Word> Words { get; }
+        private ImmutableArray<TextBlock> TextBlocks { get; }
+        private ImmutableArray<TextLine> TextLines { get; }
+        protected readonly string Text = "";
 
 #if DEBUG
         private string Text { get; }
@@ -59,23 +58,23 @@ namespace Layout15
         //    Rect = new Rectangle(new Point(0, 0), size);
         //}
 
-        public Page(Size size, string text, ImmutableArray<TChar> chars, ImmutableArray<TWord> words, ImmutableArray<TBlock> blocks, ImmutableArray<TLine> textLines)
+        public Page(Size size, string text, ImmutableArray<Character> chars, ImmutableArray<Word> words, ImmutableArray<TextBlock> blocks, ImmutableArray<TextLine> textLines)
         {
-            Text          = text;
-            Chars         = chars;
-            Words         = words;
-            TextBlocks    = blocks;
-            TextLines     = textLines;
+            Chars = chars;
+            Words = words;
+            TextBlocks = blocks;
+            TextLines = textLines;
 
-            Rect      = new Rectangle(new Point(0, 0), size);
+            Rect = new Rectangle(new Point(0, 0), size);
+            TextRect = Geometry.GetUnion(textLines);
 #if DEBUG            
-            Text = words.Select(tl => tl.ToString()).Aggregate((tl1, tl2) => tl1 + "\n" + tl2);
+            Text = text;
 #endif
         }
         #endregion
 
         #region public methods
-        public TLine this[int index] => TextLines[index];
+        public TextLine this[int index] => TextLines[index];
         #endregion
 
 #if DEBUG            

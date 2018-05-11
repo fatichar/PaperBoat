@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace Layout15.Strong
+namespace Layout15
 {
     public class Character : IRect
     {

@@ -9,14 +9,14 @@ namespace Layout15
         #endregion
 
         #region private properties
-        //private ImmutableArray<Page> Pages { get; }
-        //#endregion
+        private ImmutableArray<Page> Pages { get; }
+        #endregion
 
-        //#region constructor
-        //public Document(ImmutableArray<Page> pages)
-        //{
-        //    Pages = pages;
-        //}
+        #region constructor
+        public Document(ImmutableArray<Page> pages)
+        {
+            Pages = pages;
+        }
         #endregion
     }
 }

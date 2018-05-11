@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Drawing;
 using System.Linq;
 using JetBrains.Annotations;
 
 namespace Layout15
 {
-    public class TextLine<TBlock, TWord, TChar> : IEnumerable<TBlock> where TBlock : TextBlock<TWord, TChar> where TWord : Word<TChar>
+    public class TextLine : IEnumerable<TextBlock>, IRect
     {
         // public properties
         [PublicAPI]
-        public int TextBlockCount { get; }
+        public int TexTextBlockCount => TextBlocks.Length;
         [PublicAPI]
         public int WordCount { get; }
         [PublicAPI]
@@ -18,35 +19,46 @@ namespace Layout15
 
         #region protected properties
 
-        protected readonly ArraySlice<TBlock> Children;
+        protected readonly ArraySlice<TextBlock> TextBlocks;
 #if DEBUG
-        private string Text { get; }
+        protected readonly string Text = "";
 #endif
         #endregion
 
         #region Constructors
-        public TextLine(ImmutableArray<TBlock> textBlocks, int offset, int textBlockCount)
+        public TextLine(ImmutableArray<TextBlock> textBlocks, int offset, int texTextBlockCount)
+            :
+            this(textBlocks, offset, texTextBlockCount, Rectangle.Empty)
         {
-            Children = new ArraySlice<TBlock>(textBlocks, offset, textBlockCount);
+            Rect = Geometry.GetUnion(this.TextBlocks);
+        }
 
+        public TextLine(ImmutableArray<TextBlock> textBlocks, int offset, int texTextBlockCount, Rectangle rect)
+        {
             if (offset < 0 || offset >= textBlocks.Length)
             {
                 throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, textBlocks.Length - 1);
             }
-            if (textBlockCount < 1 || offset + textBlockCount > textBlocks.Length)
+            if (texTextBlockCount < 1 || offset + texTextBlockCount > textBlocks.Length)
             {
-                throw new ArgumentOutOfRangeException(textBlockCount, nameof(textBlockCount), 1, textBlocks.Length - offset);
+                throw new ArgumentOutOfRangeException(texTextBlockCount, nameof(texTextBlockCount), 1, textBlocks.Length - offset);
             }
             
-            WordCount = Children.Sum(b => b.WordCount);
-            CharCount = Children.Sum(b => b.CharCount) + TextBlockCount - 1;
+            TextBlocks = new ArraySlice<TextBlock>(textBlocks, offset, texTextBlockCount);
 
-            Text = textBlocks.Skip(offset).Take(TextBlockCount).Select(tb => tb.ToString()).Aggregate((tb1, tb2) => tb1 + "    " + tb2);
+            Rect = rect;
+
+            WordCount = TextBlocks.Sum(b => b.WordCount);
+            CharCount = TextBlocks.Sum(b => b.CharCount) + TexTextBlockCount - 1;
+
+#if DEBUG
+            Text = textBlocks.Skip(offset).Take(TexTextBlockCount).Select(tb => tb.ToString()).Aggregate((tb1, tb2) => tb1 + "    " + tb2);
+#endif
         }
         #endregion
 
         #region public methods
-        public TBlock this[int index] => Children[index];
+        public TextBlock this[int index] => TextBlocks[index];
 
         [PublicAPI]
         public static bool CanEndAt(char ch)
@@ -54,13 +66,18 @@ namespace Layout15
             return ch == '\n';
         }
 
+#if DEBUG
         public override string ToString() => Text;
+#endif
         #endregion
-        
-        #region IEnumerable Impl
-        public IEnumerator<TBlock> GetEnumerator() => Children.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Children).GetEnumerator();
+        #region IEnumerable Impl
+        public IEnumerator<TextBlock> GetEnumerator() => TextBlocks.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)TextBlocks).GetEnumerator();
         #endregion
+
+        // IRect Impl
+        public Rectangle Rect { get; }
     }
 }

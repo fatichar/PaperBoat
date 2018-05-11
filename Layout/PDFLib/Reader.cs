@@ -1,7 +1,7 @@
 ﻿using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using LayoutLib;
+using Layout15;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -12,16 +12,13 @@ namespace PDFLib
 {
     public class Reader
     {
-        public static LayoutLib.Document Read(string filePath)
+        public static Layout15.Document Read(string filePath)
         {
             if (!File.Exists(filePath))
             {
                 throw new FileNotFoundException("", filePath);
             }
             
-            var arr = new ArraySegment<int>();
-            
-
             var reader = new PdfReader(filePath);
             var document = new PdfDocument(reader);
 
@@ -35,12 +32,12 @@ namespace PDFLib
                 pdfPages.Add(page);
             }
 
-            var pageLayouts = pdfPages.ConvertAll(CreatePage).ToImmutableList();
+            var pageLayouts = pdfPages.ConvertAll(CreatePage).ToImmutableArray();
 
-            return new LayoutLib.Document(pageLayouts);
+            return new Layout15.Document(pageLayouts);
         }
 
-        private static LayoutLib.Page CreatePage(PdfPage pdfPage)
+        private static Layout15.Page CreatePage(PdfPage pdfPage)
         {
             var text = PdfTextExtractor.GetTextFromPage(pdfPage, new LocationTextExtractionStrategy());
 
@@ -53,20 +50,15 @@ namespace PDFLib
             return page;
         }
 
-        private static LayoutLib.Page CreatePage(Size size, string text)
+        private static Layout15.Page CreatePage(System.Drawing.Size size, string text)
         {
-            var chars     = CreateCharacters(text);
-            var words     = new List<Word>();
-            var blocks    = new List<TextBlock>();
-            var textLines = new List<TextLine>();
+            var chars = CreateCharacters(text);
+            var _words = new List<Word>();
 
             var wordStarted = false;
+            var wordStart = 0;
 
-            var wordStart  = 0;
-            var blockStart = 0;
-            var lineStart  = 0;
-
-            for (int i = 0; i < chars.Count; i++)
+            for (int i = 0; i < chars.Length; i++)
             {
                 var ch = chars[i].Value;
 
@@ -81,42 +73,101 @@ namespace PDFLib
                 else
                 {
                     if (!Word.CanEndAt(ch)) continue;
-                    
-                    var word = new Word(chars, wordStart, i - wordStart);                        
-                    words.Add(word);
+
+                    var word = new Word(chars, wordStart, i - wordStart);
+                    _words.Add(word);
                     wordStarted = false;
-
-                    if (!TextBlock.CanEndAt(ch)) continue;
-                    
-                    var block = new TextBlock(words, blockStart, words.Count - blockStart);
-                    blocks.Add(block);
-                    blockStart = words.Count;
-
-                    if (TextLine.CanEndAt(ch))
-                    {
-                        var line = new TextLine(blocks, lineStart, blocks.Count - lineStart);
-                        textLines.Add(line);
-                        lineStart = textLines.Count;
-                    }
                 }
             }
 
-            var page = new LayoutLib.Page(size, text, chars, words, blocks, textLines);
+            var words = _words.ToImmutableArray();
+            var blocks = CreateBlocks(words);
+            var textLines = CreateTextLines(blocks);
+
+            var page = new Layout15.Page(size, text, chars, words, blocks, textLines);
 
             return page;
         }
 
-        private static ImmutableList<LayoutLib.Character> CreateCharacters(string text)
+        private static ImmutableArray<TextBlock> CreateBlocks(ImmutableArray<Word> words)
         {
-            var characters = new List<LayoutLib.Character>(text.Length);
+            var blocksList = new List<TextBlock>();
+
+            var blockStarted = false;
+            var blockStart = 0;
+
+            for (int i = 0; i < words.Length; i++)
+            {
+                var word = words[i];
+
+                if (!blockStarted)
+                {
+                    blockStarted = true;
+                    blockStart = i;
+                }
+
+                var wordEndChar = word.EndChar?.Value ?? '\n';
+                if (!TextBlock.CanEndAt(wordEndChar)) continue;
+
+                var block = new TextBlock(words, blockStart, i - blockStart);
+                blocksList.Add(block);
+                blockStarted = false;
+            }
+
+            if (blockStarted)
+            {
+                var block = new TextBlock(words, blockStart, words.Length - blockStart);
+                blocksList.Add(block);
+            }
+
+            return blocksList.ToImmutableArray();
+        }
+
+        private static ImmutableArray<TextLine> CreateTextLines(ImmutableArray<TextBlock> blocks)
+        {
+            var linesList = new List<TextLine>();
+
+            var lineStarted = false;
+            var lineStart = 0;
+
+            for (int i = 0; i < blocks.Length; i++)
+            {
+                var block = blocks[i];
+
+                if (!lineStarted)
+                {
+                    lineStarted = true;
+                    lineStart = i;
+                }
+
+                var blockEndChar = block.EndChar?.Value ?? '\n';
+                if (!TextLine.CanEndAt(blockEndChar)) continue;
+
+                var line = new TextLine(blocks, lineStart, i - lineStart);
+                linesList.Add(line);
+                lineStarted = false;
+            }
+
+            if (lineStarted)
+            {
+                var line = new TextLine(blocks, lineStart, blocks.Length - lineStart);
+                linesList.Add(line);
+            }
+
+            return linesList.ToImmutableArray();
+        }
+        
+        private static ImmutableArray<Character> CreateCharacters(string text)
+        {
+            var characters = new List<Layout15.Character>(text.Length);
 
             for (int i = 0; i < text.Length; i++)
             {
-                var ch = new Character(text, i, Rectangle.Empty);
+                var ch = new Character(text, i, System.Drawing.Rectangle.Empty);
                 characters.Add(ch);
             }
 
-            return characters;
+            return characters.ToImmutableArray();
         }
     }
 }

@@ -10,13 +10,13 @@ namespace Layout15
 {
     public class ArraySlice<T> : IEnumerable<T>
     {
-        private readonly ImmutableArray<T> _sourceArray;
-        private readonly int _offset;
+        public ImmutableArray<T> SourceArray { get; }
+        public int Offset { get; }
 
         public ArraySlice(ImmutableArray<T> sourceArray, int offset, int length)
         {
-            _sourceArray = sourceArray;
-            _offset      = offset;
+            SourceArray  = sourceArray;
+            Offset      = offset;
             Length       = length;
         }
 
@@ -28,13 +28,13 @@ namespace Layout15
                 {
                     throw new ArgumentOutOfRangeException(index, nameof(index), 0, Length - 1);
                 }
-                return _sourceArray[_offset + index];
+                return SourceArray[Offset + index];
             }
         }
 
         public int Length { get; }
 
-        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>) _sourceArray).GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>) SourceArray).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
