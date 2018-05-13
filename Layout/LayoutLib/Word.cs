@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace Layout15
+namespace LayoutLib
 {
     public class Word : IEnumerable<Character>, IRect
     {
@@ -14,9 +14,9 @@ namespace Layout15
         public int CharCount => Chars.Length;
 
         // protected properties
-        protected readonly ArraySlice<Character> Chars;
+        private ArraySlice<Character> Chars { get; }
 #if DEBUG
-        protected readonly string Text = "";
+        private readonly string _text;
 #endif
 
         #region Constructors
@@ -43,18 +43,18 @@ namespace Layout15
             Rect = rect;
 
 #if DEBUG
-            Text = chars.Skip(offset).Take(CharCount).Select(c => c.ToString()).Aggregate((c1, c2) => c1 + c2);
+            _text = chars.Skip(offset).Take(CharCount).Select(c => c.ToString()).Aggregate((c1, c2) => c1 + c2);
 #endif
         }
 #endregion
 
-#region public methods
+        #region public methods
         [PublicAPI]
         public Character this[int index] => Chars[index];
         
 #if DEBUG
         [PublicAPI]
-        public override string ToString() => Text;
+        public override string ToString() => _text;
 #endif
 
         [PublicAPI]
@@ -62,13 +62,13 @@ namespace Layout15
 
         [PublicAPI]
         public static bool CanEndAt(char ch) => char.IsWhiteSpace(ch);
-#endregion
+        #endregion
         
-#region IEnumerable Impl
+        #region IEnumerable Impl
         public IEnumerator<Character> GetEnumerator() => Chars.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Chars).GetEnumerator();
-#endregion
+        #endregion
 
         // IRect Impl
         public Rectangle Rect { get; }

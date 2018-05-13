@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace Layout15
+namespace LayoutLib
 {
     public class Page : IRect
     {
@@ -30,7 +30,6 @@ namespace Layout15
         private ImmutableArray<Word> Words { get; }
         private ImmutableArray<TextBlock> TextBlocks { get; }
         private ImmutableArray<TextLine> TextLines { get; }
-        protected readonly string Text = "";
 
 #if DEBUG
         private string Text { get; }
@@ -38,27 +37,7 @@ namespace Layout15
         #endregion
 
         #region Constructors
-        //public Page(Size size, ImmutableArray<TextLine> textLines, int offset, int textLineCount)
-        //{
-        //    TextLines = textLines;
-
-        //    if (offset < 0 || offset >= textLines.Length)
-        //    {
-        //        throw new ArgumentOutOfRangeException(offset, nameof(offset), 0, textLines.Length - 1);
-        //    }
-        //    if (textLineCount < 1 || offset + textLineCount >= textLines.Length)
-        //    {
-        //        throw new ArgumentOutOfRangeException(textLineCount, nameof(textLineCount), 1, textLines.Length - offset);
-        //    }
-
-        //    Offset = offset;
-        //    TextLineCount = textLineCount;
-
-        //    TextRect = Geometry.GetUnion(textLines);
-        //    Rect = new Rectangle(new Point(0, 0), size);
-        //}
-
-        public Page(Size size, string text, ImmutableArray<Character> chars, ImmutableArray<Word> words, ImmutableArray<TextBlock> blocks, ImmutableArray<TextLine> textLines)
+        public Page(ImmutableArray<Character> chars, ImmutableArray<Word> words, ImmutableArray<TextBlock> blocks, ImmutableArray<TextLine> textLines, Size size)
         {
             Chars = chars;
             Words = words;
@@ -67,8 +46,8 @@ namespace Layout15
 
             Rect = new Rectangle(new Point(0, 0), size);
             TextRect = Geometry.GetUnion(textLines);
-#if DEBUG            
-            Text = text;
+#if DEBUG
+            Text = textLines.Select(tb => tb.ToString()).Aggregate((tb1, tb2) => tb1 + "\n" + tb2);
 #endif
         }
         #endregion

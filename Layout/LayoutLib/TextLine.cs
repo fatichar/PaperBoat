@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace Layout15
+namespace LayoutLib
 {
     public class TextLine : IEnumerable<TextBlock>, IRect
     {

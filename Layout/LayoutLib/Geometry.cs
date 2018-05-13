@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Linq;
 
-namespace Layout15
+namespace LayoutLib
 {
     internal static class Geometry
     {

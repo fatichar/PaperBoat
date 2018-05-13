@@ -1,18 +1,22 @@
 ﻿using System.Collections.Immutable;
+using JetBrains.Annotations;
 
-namespace Layout15
+namespace LayoutLib
 {
     public class Document
     {
         #region public properties
-        //public int PageCount => Pages.Length;
+        [PublicAPI]
+        public int PageCount => Pages.Length;
+        [PublicAPI]
+        public ImmutableArray<Page> Pages { get; }
         #endregion
 
         #region private properties
-        private ImmutableArray<Page> Pages { get; }
         #endregion
 
         #region constructor
+        [PublicAPI]
         public Document(ImmutableArray<Page> pages)
         {
             Pages = pages;

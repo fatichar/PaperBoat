@@ -1,7 +1,7 @@
 ﻿using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using Layout15;
+using LayoutLib;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -10,9 +10,9 @@ using System.IO;
 
 namespace PDFLib
 {
-    public class Reader
+    public static class Reader
     {
-        public static Layout15.Document Read(string filePath)
+        public static LayoutLib.Document Read(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -22,11 +22,11 @@ namespace PDFLib
             var reader = new PdfReader(filePath);
             var document = new PdfDocument(reader);
 
-            int pageCount = document.GetNumberOfPages();
+            var pageCount = document.GetNumberOfPages();
 
             var pdfPages = new List<PdfPage>();
 
-            for (int i = 1; i <= pageCount; i++)
+            for (var i = 1; i <= pageCount; i++)
             {
                 var page = document.GetPage(i);
                 pdfPages.Add(page);
@@ -34,10 +34,10 @@ namespace PDFLib
 
             var pageLayouts = pdfPages.ConvertAll(CreatePage).ToImmutableArray();
 
-            return new Layout15.Document(pageLayouts);
+            return new LayoutLib.Document(pageLayouts);
         }
 
-        private static Layout15.Page CreatePage(PdfPage pdfPage)
+        private static LayoutLib.Page CreatePage(PdfPage pdfPage)
         {
             var text = PdfTextExtractor.GetTextFromPage(pdfPage, new LocationTextExtractionStrategy());
 
@@ -50,7 +50,7 @@ namespace PDFLib
             return page;
         }
 
-        private static Layout15.Page CreatePage(System.Drawing.Size size, string text)
+        private static LayoutLib.Page CreatePage(System.Drawing.Size size, string text)
         {
             var chars = CreateCharacters(text);
             var _words = new List<Word>();
@@ -58,7 +58,7 @@ namespace PDFLib
             var wordStarted = false;
             var wordStart = 0;
 
-            for (int i = 0; i < chars.Length; i++)
+            for (var i = 0; i < chars.Length; i++)
             {
                 var ch = chars[i].Value;
 
@@ -84,7 +84,7 @@ namespace PDFLib
             var blocks = CreateBlocks(words);
             var textLines = CreateTextLines(blocks);
 
-            var page = new Layout15.Page(size, text, chars, words, blocks, textLines);
+            var page = new LayoutLib.Page(chars, words, blocks, textLines, size);
 
             return page;
         }
@@ -96,7 +96,7 @@ namespace PDFLib
             var blockStarted = false;
             var blockStart = 0;
 
-            for (int i = 0; i < words.Length; i++)
+            for (var i = 0; i < words.Length; i++)
             {
                 var word = words[i];
 
@@ -109,7 +109,7 @@ namespace PDFLib
                 var wordEndChar = word.EndChar?.Value ?? '\n';
                 if (!TextBlock.CanEndAt(wordEndChar)) continue;
 
-                var block = new TextBlock(words, blockStart, i - blockStart);
+                var block = new TextBlock(words, blockStart, 1 + i - blockStart);
                 blocksList.Add(block);
                 blockStarted = false;
             }
@@ -130,7 +130,7 @@ namespace PDFLib
             var lineStarted = false;
             var lineStart = 0;
 
-            for (int i = 0; i < blocks.Length; i++)
+            for (var i = 0; i < blocks.Length; i++)
             {
                 var block = blocks[i];
 
@@ -143,7 +143,7 @@ namespace PDFLib
                 var blockEndChar = block.EndChar?.Value ?? '\n';
                 if (!TextLine.CanEndAt(blockEndChar)) continue;
 
-                var line = new TextLine(blocks, lineStart, i - lineStart);
+                var line = new TextLine(blocks, lineStart, 1 + i - lineStart);
                 linesList.Add(line);
                 lineStarted = false;
             }
@@ -159,9 +159,9 @@ namespace PDFLib
         
         private static ImmutableArray<Character> CreateCharacters(string text)
         {
-            var characters = new List<Layout15.Character>(text.Length);
+            var characters = new List<LayoutLib.Character>(text.Length);
 
-            for (int i = 0; i < text.Length; i++)
+            for (var i = 0; i < text.Length; i++)
             {
                 var ch = new Character(text, i, System.Drawing.Rectangle.Empty);
                 characters.Add(ch);

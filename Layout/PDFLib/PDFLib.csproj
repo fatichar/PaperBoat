@@ -104,9 +104,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Layout15\Layout15.csproj">
+    <ProjectReference Include="..\LayoutLib\LayoutLib.csproj">
       <Project>{92153216-a29e-4e8b-a61a-e228d5c17caa}</Project>
-      <Name>Layout15</Name>
+      <Name>LayoutLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

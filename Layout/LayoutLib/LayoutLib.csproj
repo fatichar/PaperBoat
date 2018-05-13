@@ -7,8 +7,8 @@
     <ProjectGuid>{92153216-A29E-4E8B-A61A-E228D5C17CAA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Layout15</RootNamespace>
-    <AssemblyName>Layout15</AssemblyName>
+    <RootNamespace>LayoutLib</RootNamespace>
+    <AssemblyName>LayoutLib</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

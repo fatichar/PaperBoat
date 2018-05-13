@@ -1,14 +1,15 @@
 ﻿using PDFLib;
 using System;
+using System.Linq;
 
 namespace PDFApp
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var doc = Reader.Read("d:\\data\\1.pdf");
-            Console.WriteLine("Hello World!");
+            Console.WriteLine(doc.Pages.First().ToString());
         }
     }
 }

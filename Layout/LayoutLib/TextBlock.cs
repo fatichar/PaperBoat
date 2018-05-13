@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Drawing;
 using System.Linq;
 
-namespace Layout15
+namespace LayoutLib
 {
     public class TextBlock : IEnumerable<Word>, IRect
     {

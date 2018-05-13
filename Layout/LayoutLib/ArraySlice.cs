@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Layout15
+namespace LayoutLib
 {
     public class ArraySlice<T> : IEnumerable<T>
     {
@@ -15,9 +11,9 @@ namespace Layout15
 
         public ArraySlice(ImmutableArray<T> sourceArray, int offset, int length)
         {
-            SourceArray  = sourceArray;
+            SourceArray = sourceArray;
             Offset      = offset;
-            Length       = length;
+            Length      = length;
         }
 
         public T this[int index]
