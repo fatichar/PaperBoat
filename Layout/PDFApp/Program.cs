@@ -8,7 +8,8 @@ namespace PDFApp
     {
         private static void Main(string[] args)
         {
-            var doc = Reader.Read("d:\\data\\1.pdf");
+            Console.WriteLine();
+            var doc = Reader.Read("TestData\\Admission Offer Letter.pdf");
             Console.WriteLine(doc.Pages.First().ToString());
         }
     }

@@ -1,22 +1,27 @@
-﻿using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Parser;
-using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using LayoutLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Drawing;
 using System.IO;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using LayoutLib;
 
 namespace PDFLib
 {
     public static class Reader
     {
-        public static LayoutLib.Document Read(string filePath)
+        public static Document Read(string filePath)
         {
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException("", filePath);
+                var msg = "";
+                if (!Path.IsPathFullyQualified(filePath))
+                {
+                    msg = "Current directory: " + Environment.CurrentDirectory;
+                }
+                throw new FileNotFoundException(msg, filePath);
             }
             
             var reader = new PdfReader(filePath);
@@ -34,10 +39,10 @@ namespace PDFLib
 
             var pageLayouts = pdfPages.ConvertAll(CreatePage).ToImmutableArray();
 
-            return new LayoutLib.Document(pageLayouts);
+            return new Document(pageLayouts);
         }
 
-        private static LayoutLib.Page CreatePage(PdfPage pdfPage)
+        private static Page CreatePage(PdfPage pdfPage)
         {
             var text = PdfTextExtractor.GetTextFromPage(pdfPage, new LocationTextExtractionStrategy());
 
@@ -50,7 +55,7 @@ namespace PDFLib
             return page;
         }
 
-        private static LayoutLib.Page CreatePage(System.Drawing.Size size, string text)
+        private static Page CreatePage(Size size, string text)
         {
             var chars = CreateCharacters(text);
             var _words = new List<Word>();
@@ -84,7 +89,7 @@ namespace PDFLib
             var blocks = CreateBlocks(words);
             var textLines = CreateTextLines(blocks);
 
-            var page = new LayoutLib.Page(chars, words, blocks, textLines, size);
+            var page = new Page(chars, words, blocks, textLines, size);
 
             return page;
         }
@@ -159,11 +164,11 @@ namespace PDFLib
         
         private static ImmutableArray<Character> CreateCharacters(string text)
         {
-            var characters = new List<LayoutLib.Character>(text.Length);
+            var characters = new List<Character>(text.Length);
 
             for (var i = 0; i < text.Length; i++)
             {
-                var ch = new Character(text, i, System.Drawing.Rectangle.Empty);
+                var ch = new Character(text, i, Rectangle.Empty);
                 characters.Add(ch);
             }
 
