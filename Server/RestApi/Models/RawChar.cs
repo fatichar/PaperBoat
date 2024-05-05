@@ -2,4 +2,4 @@
 
 namespace RestApi.Models;
 
-public class RawChar(char Value, Rectangle Rect, int Confidence);
+public record RawChar(char Value, Rectangle Rect, int Confidence);

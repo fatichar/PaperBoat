@@ -1,6 +1,12 @@
+using Microsoft.Extensions.DependencyInjection;
 using RestApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+IConfiguration configuration = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appSettings.json", false)
+        .Build();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -8,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // add controllers
 builder.Services.AddControllers();
+builder.Services.AddSingleton<IConfiguration>(configuration);
 
 // register dependencies
 builder.Services.AddSingleton<ExtractionService>();
