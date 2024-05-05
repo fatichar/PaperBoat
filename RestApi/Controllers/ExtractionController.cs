@@ -7,8 +7,10 @@ namespace RestApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ExtractionController(ExtractionService extractionService) : Controller
+public class ExtractionController(ExtractionService extractionService, IConfiguration configuration) : Controller
 {
+    private IConfiguration _config { get; } = configuration;
+
     private ExtractionService ExtractionService { get; } = extractionService;
 
     [HttpPost]
