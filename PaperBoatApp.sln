@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App\App.csproj", "{87EC9AC5-04F2-4492-AF9D-B8FB1AF8B565}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Desktop", "App\App.Desktop\App.Desktop.csproj", "{1202FA47-4D17-41FF-A225-88017728662B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Browser", "App\App.Browser\App.Browser.csproj", "{8430EE04-2BC0-46DA-860F-B0E657F7BFA0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87EC9AC5-04F2-4492-AF9D-B8FB1AF8B565}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87EC9AC5-04F2-4492-AF9D-B8FB1AF8B565}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87EC9AC5-04F2-4492-AF9D-B8FB1AF8B565}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87EC9AC5-04F2-4492-AF9D-B8FB1AF8B565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1202FA47-4D17-41FF-A225-88017728662B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1202FA47-4D17-41FF-A225-88017728662B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1202FA47-4D17-41FF-A225-88017728662B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1202FA47-4D17-41FF-A225-88017728662B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8430EE04-2BC0-46DA-860F-B0E657F7BFA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8430EE04-2BC0-46DA-860F-B0E657F7BFA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8430EE04-2BC0-46DA-860F-B0E657F7BFA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8430EE04-2BC0-46DA-860F-B0E657F7BFA0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
