@@ -3,24 +3,25 @@ using RestApi.Models;
 using RestApi.Services.DataExtractor;
 using System.Configuration;
 
-namespace RestApi.Services;
-
-public class ExtractionService
-{
-    public ExtractionService(IConfiguration config)
+namespace RestApi.Services
+{ 
+    public class ExtractionService
     {
-        _config = config;
-    }
+        public ExtractionService(IConfiguration config)
+        {
+            _config = config;
+        }
 
-    private IConfiguration _config { get; }
+        private IConfiguration _config { get; }
 
-    public Document Extract(ExtractionRequest request)
-    {
-        var response = new Document("Abc", new List<Group>());
+        public Document Extract(ExtractionRequest request)
+        {
+            var response = new Document("Abc", new List<Group>());
 
-        DataExtractorFactory dataExtractorFactory = new DataExtractorFactory();
-        IDataExtractor dataExtractor = dataExtractorFactory.CreateDataExtractor(_config["ExtractionConfig:Engine"], request);
+            DataExtractorFactory dataExtractorFactory = new DataExtractorFactory();
+            IDataExtractor dataExtractor = dataExtractorFactory.CreateDataExtractor(_config["ExtractionConfig:Engine:Provider"], _config);
 
-        return dataExtractor.Extract(request.content, request.DocType, request);
+            return dataExtractor.Extract(request.content, request.DocType, request);
+        }
     }
 }
