@@ -12,5 +12,17 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <DockPanel>
+        <Menu x:Name="MenuBar" DockPanel.Dock="Top" >
+            <Menu.Styles>
+            </Menu.Styles>
+        </Menu>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBox Name="DocumentPathBox"></TextBox>
+                <Button Name="BrowseButton" Content="Browse" Click="BrowseButton_Click" />
+            </StackPanel>
+            <Button Name="LoadDocumentButton" Content="Load" Click="LoadDocumentButton_OnClick"></Button>
+        </StackPanel>
+    </DockPanel>
 </UserControl>
