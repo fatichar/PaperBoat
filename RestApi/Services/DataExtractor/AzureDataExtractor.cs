@@ -13,15 +13,17 @@ namespace RestApi.Services.DataExtractor
     {
         private string endpoint = "https://testextraction2.cognitiveservices.azure.com/";
         private string key = "258957c923c74144a08715a9063bdba2";
-        private ExtractionRequest extractionRequest;
+        private ExtractionRequest _extractionRequest;
+        IConfiguration _config ;
 
-        public AzureDataExtractor(ExtractionRequest extractionRequest)
+        public AzureDataExtractor(IConfiguration configuration)
         {
-            this.extractionRequest = extractionRequest;
+            _config = configuration;
         }
 
         public Document Extract(string content, string docType, ExtractionRequest extractionRequest)
         {
+            _extractionRequest = extractionRequest;
             return ProcessDocument(content).Result;            
         }
 
