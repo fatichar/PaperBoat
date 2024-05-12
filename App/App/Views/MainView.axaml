@@ -17,12 +17,24 @@
             <Menu.Styles>
             </Menu.Styles>
         </Menu>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical" HorizontalAlignment="Center"
+                    Margin="0,0">
+            <Grid ColumnDefinitions="600,Auto" ShowGridLines="True">
                 <TextBox Name="DocumentPathBox"></TextBox>
-                <Button Name="BrowseButton" Content="Browse" Click="BrowseButton_Click" />
-            </StackPanel>
-            <Button Name="LoadDocumentButton" Content="Load" Click="LoadDocumentButton_OnClick"></Button>
+                <Button Grid.Column="1" Margin="10,0" Name="BrowseButton" Content="Browse" Click="BrowseButton_Click" />
+            </Grid>
+            <Button Name="LoadDocumentButton"
+                    HorizontalAlignment="Center"
+                    Margin="0,10"
+                    Content="Load"
+                    Click="LoadDocumentButton_OnClick"></Button>
+        </StackPanel>
+        <StackPanel>
+            <Panel>
+                <Rectangle Height="700" Width="1000" Fill="LightGray"/>
+                <Image Margin="20" Height="600" Width="800"
+                       Source="/Assets/sample_doc.png"/>
+            </Panel>
         </StackPanel>
     </DockPanel>
 </UserControl>
