@@ -5,6 +5,10 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestApi", "RestApi\RestApi.csproj", "{4F3AB8EA-5331-466C-ABFF-5EB3022CE253}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extractor", "Extractor\Extractor.csproj", "{8E8CB477-AD6B-41A2-9161-6CDA8294723A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{F3760D99-47E3-4589-90AE-A90C164A09A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{4F3AB8EA-5331-466C-ABFF-5EB3022CE253}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F3AB8EA-5331-466C-ABFF-5EB3022CE253}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F3AB8EA-5331-466C-ABFF-5EB3022CE253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E8CB477-AD6B-41A2-9161-6CDA8294723A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E8CB477-AD6B-41A2-9161-6CDA8294723A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E8CB477-AD6B-41A2-9161-6CDA8294723A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E8CB477-AD6B-41A2-9161-6CDA8294723A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3760D99-47E3-4589-90AE-A90C164A09A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3760D99-47E3-4589-90AE-A90C164A09A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3760D99-47E3-4589-90AE-A90C164A09A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3760D99-47E3-4589-90AE-A90C164A09A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

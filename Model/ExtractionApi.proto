@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+option csharp_namespace = "PaperBoat.Model";
+
+package PaperBoat.Model;
+
+message ExtractionRequest {
+  string file_type = 1;
+  string doc_type = 2;
+  string content = 3;
+}
+
+message ExtractionResponse {
+  Extract doc = 1;
+  ExtractionError error = 2;
+}
+
+message Extract {
+  repeated Group groups = 1;
+}
+
+message Group {
+  string name = 1;
+  repeated Field fields = 2;
+  int32 confidence = 3;
+  Rectangle rect = 4;
+}
+
+message Field {
+  string name = 1;
+  ValueType valueType = 2;
+  string value = 3;
+  int32 confidence = 4;
+  Rectangle rect = 5;
+  repeated RawChar raw_text = 6;
+}
+
+enum ValueType {
+  STRING = 0;
+  INTEGER = 1;
+  DECIMAL = 2;
+  DATE = 3;
+  TIME = 4;
+  BOOLEAN = 5;
+  CURRENCY = 6;
+}
+
+message RawChar {
+  string value = 1;
+  int32 confidence = 2;
+  Rectangle rect = 3;
+}
+
+message Rectangle {
+  float left = 1;
+  float top = 2;
+  float right = 3;
+  float bottom = 4;
+}
+
+enum ErrorType {
+  UNSUPPORTED_DOC = 0;
+  POOR_QUALITY = 1;
+  INTERNAL_ERROR = 2;
+}
+
+message ExtractionError {
+  string message = 1;
+}

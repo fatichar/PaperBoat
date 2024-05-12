@@ -1,7 +1,6 @@
-
+using Extractor.Services;
 using Microsoft.AspNetCore.Mvc;
-using RestApi.Models;
-using RestApi.Services;
+using PaperBoat.Model;
 
 namespace RestApi.Controllers;
 
@@ -14,7 +13,7 @@ public class ExtractionController(ExtractionService extractionService, IConfigur
     private ExtractionService ExtractionService { get; } = extractionService;
 
     [HttpPost]
-    public Document Extract(ExtractionRequest request)
+    public Extract Extract(ExtractionRequest request)
     {
         return ExtractionService.Extract(request);
     }
