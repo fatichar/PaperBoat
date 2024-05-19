@@ -7,6 +7,7 @@ using App.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Spire.Pdf;
@@ -23,30 +24,44 @@ public partial class MainView : UserControl
         InitializeComponent();
     }
 
-    private void LoadDocumentButton_OnClick(object? sender, RoutedEventArgs e)
+    private async void LoadDocumentButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new System.NotImplementedException();
+        LoadDocument(DocumentPathBox.Text);
     }
 
-    private void BrowseButton_Click(object? sender, RoutedEventArgs e)
+    private async void BrowseButton_Click(object? sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFileDialog
+        var pdfFilePath = await OpenPdfFileDialog(GetMainWindow());
+        if (!string.IsNullOrEmpty(pdfFilePath))
         {
-            Title = "Select a document",
-            Filters = new List<FileDialogFilter>
+            DocumentPathBox.Text = pdfFilePath;
+        }
+    }
+
+    private async Task<string?> OpenPdfFileDialog(TopLevel parent)
+    {
+
+        var filePickerOpenOptions = new FilePickerOpenOptions
+        {
+            Title = "Open PDF File",
+            FileTypeFilter = new List<FilePickerFileType>
             {
-                new () { Name = "PDF Files", Extensions = { "pdf" } },
-                new () { Name = "Image Files", Extensions = { "png" } }
-            }
+                new FilePickerFileType("PDF Files")
+                {
+                    Patterns = new[] { "*.pdf" }
+                }
+            },
+            AllowMultiple = false
         };
-        Task.Run(async () =>
+
+        var files = await parent.StorageProvider.OpenFilePickerAsync(filePickerOpenOptions);
+
+        if (files != null && files.Count > 0)
         {
-            var result = await dialog.ShowAsync(GetMainWindow());
-            if (result != null && result.Any())
-            {
-                LoadDocument(result[0]);
-            }
-        });
+            return files[0].Path.LocalPath;
+        }
+
+        return null;
     }
 
     private void LoadDocument(string path)
@@ -60,8 +75,8 @@ public partial class MainView : UserControl
         Dispatcher.UIThread.InvokeAsync(() => DocImage.Source = bmp);
     }
 
-    private Window? GetMainWindow()
+    private Window GetMainWindow()
     {
-        return this.GetVisualRoot() as Window;
+        return this.GetVisualRoot() as Window ?? throw new System.Exception("MainWindow not found");
     }
 }
