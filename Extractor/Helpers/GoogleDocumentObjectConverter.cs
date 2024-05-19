@@ -7,7 +7,7 @@ namespace Extractor.Helpers;
 
 public static class GoogleDocumentObjectConverter
 {
-    internal static Extract ConvertDocument(Google.Cloud.DocumentAI.V1.Document googleDoc)
+    internal static Extract ConvertDocument(Document googleDoc)
     {
         var groups = googleDoc.Entities
             .Where(entity => entity.Confidence > 0.8)
@@ -19,7 +19,7 @@ public static class GoogleDocumentObjectConverter
         return document;
     }
 
-    private static Field CreateFieldFromEntity(Google.Cloud.DocumentAI.V1.Document.Types.Entity entity)
+    private static Field CreateFieldFromEntity(Document.Types.Entity entity)
     {
         var value = entity.MentionText ?? "";
         var type = entity.Type ?? "";

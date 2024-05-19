@@ -1,4 +1,5 @@
-﻿using PaperBoat.Model;
+﻿using System.Diagnostics.CodeAnalysis;
+using PaperBoat.Model;
 
 namespace Extractor.Helpers;
 
@@ -44,9 +45,9 @@ public static class ProtoExtensions
             Right = right
         };
     }
-    // extention property Rectangle.IsEmpty
 }
 
+[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public static class RectangleExtensions
 {
     public static readonly Rectangle EmptyRectangle = new Rectangle

@@ -32,7 +32,7 @@
         <StackPanel>
             <Panel>
                 <Rectangle Height="700" Width="1000" Fill="LightGray"/>
-                <Image Margin="20" Height="600" Width="800"
+                <Image Name="DocImage" Margin="20" Height="600" Width="800"
                        Source="/Assets/sample_doc.png"/>
             </Panel>
         </StackPanel>

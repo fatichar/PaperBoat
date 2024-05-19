@@ -31,9 +31,9 @@ public partial class App : Application
         services.AddSingleton(config);
 
         var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        var kafkaLensDataPath = Path.Combine(appDataPath, "KafkaLens");
+        var myDataPath = Path.Combine(appDataPath, "PaperBoat");
         // Create the directory if it doesn't exist
-        Directory.CreateDirectory(kafkaLensDataPath);
+        Directory.CreateDirectory(myDataPath);
 
         services.AddSingleton<MainViewModel>();
 
