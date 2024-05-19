@@ -1,52 +1,52 @@
-﻿using System.Drawing;
-using Google.Cloud.DocumentAI.V1;
+﻿using Google.Cloud.DocumentAI.V1;
 using PaperBoat.Model;
+using static Extractor.Helpers.ProtoExtensions;
+using ValueType = PaperBoat.Model.ValueType;
 
 namespace Extractor.Helpers;
 
-public class GoogleDocumentObjectConverter
+public static class GoogleDocumentObjectConverter
 {
-    internal static void ConvertDocument(Google.Cloud.DocumentAI.V1.Document googleDoc, out Extract document)
+    internal static Extract ConvertDocument(Google.Cloud.DocumentAI.V1.Document googleDoc)
     {
-        var groups = new List<Group>();
+        var groups = googleDoc.Entities
+            .Where(entity => entity.Confidence > 0.8)
+            .Select(CreateFieldFromEntity)
+            .Select(field => CreateGroup(field.Name, new List<Field> { field }, field.Confidence, field.Rect))
+            .ToList();
 
-        foreach (var entity in googleDoc.Entities)
-        {
-            if (entity.Confidence > 0.8)
-            {
-                var field = CreateFieldFromEntity(entity);
-                var group = new Group(field.Name, 
-                    new List<Field> { field }, 
-                    field.Confidence,
-                    field.Rect);
-
-                groups.Add(group);
-            }
-        }
-
-        document = new Extract("", groups);            
+        var document = CreateExtract("", groups);
+        return document;
     }
 
     private static Field CreateFieldFromEntity(Google.Cloud.DocumentAI.V1.Document.Types.Entity entity)
     {
-        var value = entity.MentionText;
-        var type = entity.Type;
-        var rectangle = Rectangle.Empty;
+        var value = entity.MentionText ?? "";
+        var type = entity.Type ?? "";
+        var rectangle = new Rectangle();
         if (entity.PageAnchor != null && entity.PageAnchor.PageRefs.Count > 0)
         {
             rectangle = GetRectangleFromPolygon(entity.PageAnchor.PageRefs[0].BoundingPoly);
-        }   
-        var confidence = entity.Confidence;
-        return new Field(entity.Type, entity.Type)
+        }
+        return new Field
         {
+            Name = type,
+            ValueType = ValueType.String,
             Value = value,
-            Rect = rectangle,
-            Confidence = (int)Math.Ceiling(confidence * 100)
+            Confidence = ToConfidence(entity.Confidence),
+            Rect = rectangle
         };
     }
 
     private static Rectangle GetRectangleFromPolygon(BoundingPoly boundingPoly)
     {
         throw new NotImplementedException();
+    }
+
+    private static int ToConfidence(float? confidence)
+    {
+        if (confidence == null) return 0;
+
+        return (int)(confidence * 100);
     }
 }

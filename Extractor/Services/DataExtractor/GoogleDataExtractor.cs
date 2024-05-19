@@ -23,8 +23,7 @@ public class GoogleDataExtractor(IConfiguration configuration) : IDataExtractor
 
         var googleDoc = PerformExtraction(engineConfig, filepath, mimeType);
 
-        GoogleDocumentObjectConverter.ConvertDocument(googleDoc, out var document);
-
+        var document = GoogleDocumentObjectConverter.ConvertDocument(googleDoc);
         return document;
     }
 

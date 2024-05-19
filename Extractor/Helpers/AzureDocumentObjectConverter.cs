@@ -4,17 +4,17 @@ using Field = PaperBoat.Model.Field;
 using Group = PaperBoat.Model.Group;
 using Rectangle = PaperBoat.Model.Rectangle;
 using ValueType = PaperBoat.Model.ValueType;
+using static Extractor.Helpers.RectangleExtensions;
+using static Extractor.Helpers.ProtoExtensions;
 
 namespace Extractor.Helpers;
 
-public class AzureDocumentObjectConverter
+public static class AzureDocumentObjectConverter
 {
-    internal static void ConvertDocument(AnalyzedDocument azureDoc,
-        string docType,
-        out Extract document)
+    internal static void ConvertDocument(AnalyzedDocument azureDoc, string docType, out Extract document)
     {
-        List<Group> groups = new List<Group>();
-        List<Field> nameFields = new List<Field>();
+        var groups = new List<Group>();
+        var nameFields = new List<Field>();
 
         if (azureDoc.Fields.TryGetValue("VendorName", out var vendorNameField)
             && vendorNameField.Type == DocumentFieldType.String)
@@ -44,40 +44,39 @@ public class AzureDocumentObjectConverter
             {
                 ++itemCount;
                 Console.WriteLine("Item:");
-                List<Field> itemFields = new List<Field>();
+                var itemFields = new List<Field>();
 
-                if (itemDocumentField.Type == DocumentFieldType.Object)
+                if (itemDocumentField.Type != DocumentFieldType.Object) continue;
+
+                IReadOnlyDictionary<string, DocumentField> itemDocumentFields = itemDocumentField.ValueObject;
+
+                if (itemDocumentFields.TryGetValue("Description", out var itemDescriptionField)
+                    && itemDescriptionField.Type == DocumentFieldType.String)
                 {
-                    IReadOnlyDictionary<string, DocumentField> itemDocumentFields = itemDocumentField.ValueObject;
-
-                    if (itemDocumentFields.TryGetValue("Description", out var itemDescriptionField)
-                        && itemDescriptionField.Type == DocumentFieldType.String)
-                    {
-                        itemFields.Add(CreateFieldFromDocumentField(itemDescriptionField, "Description"));
-                        Console.WriteLine(
-                            $"  Description: '{itemDescriptionField.ValueString}', with confidence {itemDescriptionField.Confidence}");
-                    }
-
-                    if (itemDocumentFields.TryGetValue("Amount", out var itemAmountField)
-                        && itemAmountField.Type == DocumentFieldType.Currency)
-                    {
-                        itemFields.Add(CreateAmountFieldFromDocumentField(itemAmountField, "Amount"));
-                        if (itemAmountField.ValueCurrency != null)
-                        {
-                            var itemAmount = itemAmountField.ValueCurrency;
-                            Console.WriteLine($"  Amount: '{itemAmountField.ValueCurrency.CurrencySymbol}" +
-                                              $"{itemAmountField.ValueCurrency.Amount}', with confidence {itemAmountField.Confidence}");
-                        }
-                    }
-
-                    rectangle = GetRectangleForFieldsGroup(itemFields);
-
-                    groups.Add(ProtoExtensions.CreateGroup("Item" + itemCount, itemFields, 0, rectangle));
+                    itemFields.Add(CreateFieldFromDocumentField(itemDescriptionField, "Description"));
+                    Console.WriteLine(
+                        $"  Description: '{itemDescriptionField.ValueString}', with confidence {itemDescriptionField.Confidence}");
                 }
+
+                if (itemDocumentFields.TryGetValue("Amount", out var itemAmountField)
+                    && itemAmountField.Type == DocumentFieldType.Currency)
+                {
+                    itemFields.Add(CreateAmountFieldFromDocumentField(itemAmountField, "Amount"));
+                    if (itemAmountField.ValueCurrency != null)
+                    {
+                        var itemAmount = itemAmountField.ValueCurrency;
+                        Console.WriteLine($"  Amount: '{itemAmount.CurrencySymbol}" +
+                                          $"{itemAmount.Amount}', with confidence {itemAmountField.Confidence}");
+                    }
+                }
+
+                rectangle = GetRectangleForFieldsGroup(itemFields);
+
+                groups.Add(ProtoExtensions.CreateGroup("Item" + itemCount, itemFields, 0, rectangle));
             }
         }
 
-        List<Field> totalFields = new List<Field>();
+        var totalFields = new List<Field>();
 
         if (azureDoc.Fields.TryGetValue("SubTotal", out var subTotalField)
             && subTotalField.Type == DocumentFieldType.Currency)
@@ -123,7 +122,7 @@ public class AzureDocumentObjectConverter
 
     private static Field CreateAmountFieldFromDocumentField(DocumentField amountField, string name)
     {
-        var rectangle = GetRectangleFromPolygon(amountField);
+        var rectangle = GetRectangleFromPolygon(amountField.BoundingRegions);
 
         var value = amountField.ValueCurrency == null
             ? amountField.Content
@@ -132,7 +131,7 @@ public class AzureDocumentObjectConverter
         return new Field
         {
             Name = name,
-            ValueType = ValueType.String,
+            ValueType = ValueType.Currency,
             Value = value,
             Confidence = ToConfidence(amountField.Confidence),
             Rect = rectangle
@@ -157,61 +156,51 @@ public class AzureDocumentObjectConverter
 
         for (var i = 1; i < fields.Count; i++)
         {
-            groupRectangle = GetRectanglesUnion(groupRectangle, fields[i].Rect);
+            groupRectangle = groupRectangle.Union(fields[i].Rect);
         }
 
         return groupRectangle;
     }
 
-    private static Rectangle GetRectanglesUnion(Rectangle groupRectangle, Rectangle rect)
-    {
-        if (rect.IsEmpty())
-        {
-            return groupRectangle;
-        }
-
-        if (groupRectangle.IsEmpty())
-        {
-            return rect;
-        }
-
-        var top = groupRectangle.Top < rect.Top ? groupRectangle.Top : rect.Top;
-        var bottom = groupRectangle.Bottom > rect.Bottom ? groupRectangle.Bottom : rect.Bottom;
-        var left = groupRectangle.Left < rect.Left ? groupRectangle.Left : rect.Left;
-        var right = groupRectangle.Right > rect.Right ? groupRectangle.Right : rect.Right;
-
-        return new Rectangle(left, top, right - left, bottom - top);
-    }
 
     private static Field CreateFieldFromDocumentField(DocumentField docField, string name)
     {
-        var rectangle = GetRectangleFromPolygon(docField);
+        var rectangle = GetRectangleFromPolygon(docField.BoundingRegions);
 
-        var field = new Field(name, "string")
+        var field = new Field
         {
+            Name = name,
+            ValueType = ValueType.String,
             Value = docField.ValueString,
-            Confidence = (int)docField.Confidence,
+            Confidence = ToConfidence(docField.Confidence),
             Rect = rectangle
         };
 
         return field;
     }
 
-    private static Rectangle GetRectangleFromPolygon(DocumentField docField)
+    private static Rectangle GetRectangleFromPolygon(IReadOnlyList<BoundingRegion> regions)
     {
-        if (docField.BoundingRegions.Count == 0)
+        if (regions.Count == 0)
         {
-            return Rectangle.Empty;
+            return EmptyRectangle;
         }
 
+        var rects = regions.Select(r => GetBoundingRect(r.Polygon));
+
+        return rects.Aggregate((a, b) => a.Union(b));
+    }
+
+    private static Rectangle GetBoundingRect(IReadOnlyList<float> polygon)
+    {
         var top = float.MaxValue;
         var left = float.MaxValue;
         var bottom = float.MinValue;
         var right = float.MinValue;
 
-        for (var i = 0; i < docField.BoundingRegions[0].Polygon.Count; ++i)
+        for (var i = 0; i < polygon.Count; ++i)
         {
-            var position = docField.BoundingRegions[0].Polygon[i];
+            var position = polygon[i];
 
             if (i % 2 == 0) //x coordinate
             {
@@ -219,7 +208,6 @@ public class AzureDocumentObjectConverter
                 {
                     left = position;
                 }
-
                 if (right < position)
                 {
                     right = position;
@@ -239,9 +227,7 @@ public class AzureDocumentObjectConverter
             }
         }
 
-        var rectangle = new Rectangle((int)left,
-            (int)top, (int)(right - left),
-            (int)(bottom - top));
+        var rectangle = CreateRectangle(top, left, bottom, right);
 
         return rectangle;
     }
