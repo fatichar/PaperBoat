@@ -4,6 +4,10 @@ option csharp_namespace = "PaperBoat.Model";
 
 package PaperBoat.Model;
 
+service Extraction {
+  rpc Extract (ExtractionRequest) returns (ExtractionResponse);
+}
+
 message ExtractionRequest {
   string file_type = 1;
   string doc_type = 2;

@@ -149,19 +149,14 @@ public static class AzureDocumentObjectConverter
     {
         if (fields.Count == 0)
         {
-            return new Rectangle();
+            return EmptyRectangle;
         }
 
-        var groupRectangle = fields[0].Rect;
-
-        for (var i = 1; i < fields.Count; i++)
-        {
-            groupRectangle = groupRectangle.Union(fields[i].Rect);
-        }
+        var rects = fields.Select(f => f.Rect);
+        var groupRectangle = rects.Aggregate(fields[0].Rect, (current, rect) => current.Union(rect));
 
         return groupRectangle;
     }
-
 
     private static Field CreateFieldFromDocumentField(DocumentField docField, string name)
     {
