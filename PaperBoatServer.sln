@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extractor", "Extractor\Extr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{F3760D99-47E3-4589-90AE-A90C164A09A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionApp", "FunctionApp\FunctionApp.csproj", "{91AEA558-08DB-479D-9F28-0C3376261BB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F3760D99-47E3-4589-90AE-A90C164A09A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3760D99-47E3-4589-90AE-A90C164A09A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3760D99-47E3-4589-90AE-A90C164A09A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91AEA558-08DB-479D-9F28-0C3376261BB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91AEA558-08DB-479D-9F28-0C3376261BB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91AEA558-08DB-479D-9F28-0C3376261BB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91AEA558-08DB-479D-9F28-0C3376261BB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

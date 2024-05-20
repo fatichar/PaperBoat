@@ -23,18 +23,9 @@ public class AzureDataExtractor(IConfiguration configuration) : IDataExtractor
         var client = new DocumentIntelligenceClient(new Uri(ENDPOINT), credential);
         var docType = "prebuilt-invoice";
 
-        //sample invoice document
-
-        var imgData = File.ReadAllBytes("D:\\Data\\ADE\\bill.jpeg");
-
-        var binaryData = BinaryData.FromBytes(imgData);
-
-        //Uri invoiceUri = new Uri("https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-invoice.pdf");
-        //Uri invoiceUri = new Uri("D:\\Data\\ADE\\bill.jpeg");
-
         var docContent = new AnalyzeDocumentContent()
         {
-            Base64Source = binaryData
+            Base64Source = BinaryData.FromBytes(Convert.FromBase64String(content))
         };
 
         Operation<AnalyzeResult> operation =
@@ -49,8 +40,7 @@ public class AzureDataExtractor(IConfiguration configuration) : IDataExtractor
 
         var analyzedDocument = result.Documents[0];
 
-        AzureDocumentObjectConverter
-            .ConvertDocument(analyzedDocument, docType, out var document);
+        var document = AzureMapper.ConvertDocument(new InClassName(analyzedDocument, docType));
 
         return document;
     }

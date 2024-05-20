@@ -5,7 +5,7 @@ using ValueType = PaperBoat.Model.ValueType;
 
 namespace Extractor.Helpers;
 
-public static class GoogleDocumentObjectConverter
+public static class GoogleMapper
 {
     internal static Extract ConvertDocument(Document googleDoc)
     {

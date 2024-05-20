@@ -9,14 +9,26 @@ using static Extractor.Helpers.ProtoExtensions;
 
 namespace Extractor.Helpers;
 
-public static class AzureDocumentObjectConverter
+internal class InClassName
 {
-    internal static void ConvertDocument(AnalyzedDocument azureDoc, string docType, out Extract document)
+    public InClassName(AnalyzedDocument azureDoc, string docType)
+    {
+        AzureDoc = azureDoc;
+        DocType = docType;
+    }
+
+    public AnalyzedDocument AzureDoc { get; private set; }
+    public string DocType { get; private set; }
+}
+
+public static class AzureMapper
+{
+    internal static Extract ConvertDocument(InClassName inClassName)
     {
         var groups = new List<Group>();
         var nameFields = new List<Field>();
 
-        if (azureDoc.Fields.TryGetValue("VendorName", out var vendorNameField)
+        if (inClassName.AzureDoc.Fields.TryGetValue("VendorName", out var vendorNameField)
             && vendorNameField.Type == DocumentFieldType.String)
         {
             nameFields.Add(CreateFieldFromDocumentField(vendorNameField, "VendorName"));
@@ -24,7 +36,7 @@ public static class AzureDocumentObjectConverter
                 $"Vendor Name: '{vendorNameField.ValueString}', with confidence {vendorNameField.Confidence}");
         }
 
-        if (azureDoc.Fields.TryGetValue("CustomerName", out var customerNameField)
+        if (inClassName.AzureDoc.Fields.TryGetValue("CustomerName", out var customerNameField)
             && customerNameField.Type == DocumentFieldType.String)
         {
             nameFields.Add(CreateFieldFromDocumentField(customerNameField, "CustomerName"));
@@ -36,7 +48,7 @@ public static class AzureDocumentObjectConverter
 
         groups.Add(ProtoExtensions.CreateGroup("Names", nameFields, 0, rectangle));
 
-        if (azureDoc.Fields.TryGetValue("Items", out var itemsField)
+        if (inClassName.AzureDoc.Fields.TryGetValue("Items", out var itemsField)
             && itemsField.Type == DocumentFieldType.Array)
         {
             var itemCount = 0;
@@ -78,7 +90,7 @@ public static class AzureDocumentObjectConverter
 
         var totalFields = new List<Field>();
 
-        if (azureDoc.Fields.TryGetValue("SubTotal", out var subTotalField)
+        if (inClassName.AzureDoc.Fields.TryGetValue("SubTotal", out var subTotalField)
             && subTotalField.Type == DocumentFieldType.Currency)
         {
             totalFields.Add(CreateAmountFieldFromDocumentField(subTotalField, "SubTotal"));
@@ -90,7 +102,7 @@ public static class AzureDocumentObjectConverter
             }
         }
 
-        if (azureDoc.Fields.TryGetValue("TotalTax", out var totalTaxField)
+        if (inClassName.AzureDoc.Fields.TryGetValue("TotalTax", out var totalTaxField)
             && totalTaxField.Type == DocumentFieldType.Currency)
         {
             totalFields.Add(CreateAmountFieldFromDocumentField(totalTaxField, "TotalTax"));
@@ -102,7 +114,7 @@ public static class AzureDocumentObjectConverter
             }
         }
 
-        if (azureDoc.Fields.TryGetValue("InvoiceTotal", out var invoiceTotalField)
+        if (inClassName.AzureDoc.Fields.TryGetValue("InvoiceTotal", out var invoiceTotalField)
             && invoiceTotalField.Type == DocumentFieldType.Currency)
         {
             totalFields.Add(CreateAmountFieldFromDocumentField(invoiceTotalField, "InvoiceTotal"));
@@ -117,7 +129,8 @@ public static class AzureDocumentObjectConverter
         rectangle = GetRectangleForFieldsGroup(totalFields);
         groups.Add(ProtoExtensions.CreateGroup("Total", totalFields, 0, rectangle));
 
-        document = ProtoExtensions.CreateExtract(docType, groups);
+        var document = ProtoExtensions.CreateExtract(inClassName.DocType, groups);
+        return document;
     }
 
     private static Field CreateAmountFieldFromDocumentField(DocumentField amountField, string name)

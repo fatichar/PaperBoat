@@ -1,4 +1,5 @@
-﻿using Extractor.Helpers;
+﻿using System.Buffers.Text;
+using Extractor.Helpers;
 using Google.Cloud.DocumentAI.V1;
 using Google.Protobuf;
 using Microsoft.Extensions.Configuration;
@@ -10,21 +11,34 @@ public class GoogleDataExtractor(IConfiguration configuration) : IDataExtractor
 {
     public Extract Extract(ExtractionRequest request)
     {
-        return ProcessDocument(request.Content);
+        return ProcessDocument(request);
     }
 
-    private Extract ProcessDocument(string data)
+    private Extract ProcessDocument(ExtractionRequest request)
     {
         var engineConfig = CreateGoogleEngineConfig();
+        var mimeType = GetMimeType(request);
 
-        //TODO: use file content from request
-        var filepath = "D:\\Data\\ADE\\bill.pdf";
-        var mimeType = "application/pdf";
+        var googleDoc = PerformExtraction(engineConfig, request.Content, mimeType);
 
-        var googleDoc = PerformExtraction(engineConfig, filepath, mimeType);
-
-        var document = GoogleDocumentObjectConverter.ConvertDocument(googleDoc);
+        var document = GoogleMapper.ConvertDocument(googleDoc);
         return document;
+    }
+
+    private static string GetMimeType(ExtractionRequest request)
+    {
+        switch (request.FileType.ToLower())
+        {
+            case "pdf":
+                default:
+                return "application/pdf";
+            case "png":
+            case "jpg":
+            case "jpeg":
+                return "image/jpeg";
+            case "txt":
+                return "text/plain";
+        }
     }
 
     private GoogleEngineConfig CreateGoogleEngineConfig()
@@ -38,7 +52,7 @@ public class GoogleDataExtractor(IConfiguration configuration) : IDataExtractor
 
     private Google.Cloud.DocumentAI.V1.Document PerformExtraction(
         GoogleEngineConfig config,
-        string filepath,
+        string fileData,
         string mimeType
     )
     {
@@ -49,10 +63,9 @@ public class GoogleDataExtractor(IConfiguration configuration) : IDataExtractor
         }.Build();
 
         // Read in local file
-        using var fileStream = File.OpenRead(filepath);
         var rawDocument = new RawDocument
         {
-            Content = ByteString.FromStream(fileStream),
+            Content = ByteString.FromBase64(fileData),
             MimeType = mimeType
         };
 
