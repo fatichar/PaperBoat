@@ -28,8 +28,22 @@ public class AzureDataExtractor(IConfiguration configuration) : IDataExtractor
             Base64Source = BinaryData.FromBytes(Convert.FromBase64String(content))
         };
 
-        Operation<AnalyzeResult> operation =
-            await client.AnalyzeDocumentAsync(WaitUntil.Completed, docType, docContent);
+        Operation<AnalyzeResult> operation;
+
+        try
+        {
+            operation = await client.AnalyzeDocumentAsync(WaitUntil.Completed, docType, docContent);
+        }
+        catch (ArgumentException e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
 
         var result = operation.Value;
         if (result.Documents.Count == 0)

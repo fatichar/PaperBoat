@@ -1,3 +1,4 @@
+using Extractor.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -7,7 +8,7 @@ using PaperBoat.Model;
 
 namespace PaperBoat.FunctionApp;
 
-public class DocExtractor(ILogger<DocExtractor> logger)
+public class DocExtractor(ILogger<DocExtractor> logger, ExtractionService extractionService)
 {
     [Function("extract")]
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
@@ -16,7 +17,7 @@ public class DocExtractor(ILogger<DocExtractor> logger)
 
         // Deserialize the request body into the model class
         var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        var request = JsonConvert.DeserializeObject<ExtractionRequest>(requestBody);
+        var request = ExtractionRequest.Parser.ParseJson(requestBody);
 
         // Validate the parameters
         if (request == null)
@@ -24,6 +25,8 @@ public class DocExtractor(ILogger<DocExtractor> logger)
             return new BadRequestObjectResult("No request body was provided.");
         }
 
-        return new OkObjectResult("Extracting data from the " + request.DocType);
+        var extract = extractionService.Extract(request);
+
+        return new OkObjectResult(extract);
     }
 }

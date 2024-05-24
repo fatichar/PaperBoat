@@ -3,17 +3,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:app="clr-namespace:App"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="App.Views.MainView"
              x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
+    <UserControl.Resources>
+        <app:TextToBoolConverter x:Key="TextToBoolConverter" />
+    </UserControl.Resources>
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
-  </Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
 
     <DockPanel>
-        <Menu x:Name="MenuBar" DockPanel.Dock="Top" >
+        <Menu x:Name="MenuBar" DockPanel.Dock="Top">
             <Menu.Styles>
             </Menu.Styles>
         </Menu>
@@ -23,17 +27,28 @@
                 <TextBox Name="DocumentPathBox"></TextBox>
                 <Button Grid.Column="1" Margin="10,0" Name="BrowseButton" Content="Browse" Click="BrowseButton_Click" />
             </Grid>
-            <Button Name="LoadDocumentButton"
-                    HorizontalAlignment="Center"
-                    Margin="0,10"
-                    Content="Load"
-                    Click="LoadDocumentButton_OnClick"></Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                        Margin="5" Spacing="10">
+                <Button Name="LoadDocumentButton"
+                        HorizontalAlignment="Center"
+                        Margin="0,10"
+                        Content="Load"
+                        IsEnabled="{Binding #DocumentPathBox.Text, Mode=OneWay, Converter={StaticResource TextToBoolConverter}}"
+                        Click="LoadDocumentButton_OnClick">
+                </Button>
+                <Button Name="ExtractButton"
+                        HorizontalAlignment="Center"
+                        Margin="0,10"
+                        Content="Extract"
+                        IsEnabled="{Binding IsDocumentLoaded, Mode=OneWay}"
+                        Click="ExtractButton_OnClick">
+                </Button>
+            </StackPanel>
         </StackPanel>
         <StackPanel>
             <Panel>
-                <Rectangle Height="700" Width="1000" Fill="LightGray"/>
-                <Image Name="DocImage" Margin="20" Height="600" Width="800"
-                       Source="/Assets/sample_doc.png"/>
+                <Rectangle Height="700" Width="1000" Fill="LightGray" />
+                <Image Name="DocImage" Margin="20" Height="600" Width="800" />
             </Panel>
         </StackPanel>
     </DockPanel>

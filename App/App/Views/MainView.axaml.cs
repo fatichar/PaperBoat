@@ -17,46 +17,73 @@ namespace App.Views;
 
 public partial class MainView : UserControl
 {
-    private MainViewModel? Context => (MainViewModel?)DataContext;
+    #region Properties
+    private MainViewModel Model => (MainViewModel)(DataContext ?? new MainViewModel(new AppConfig()));
+
+    private static readonly string[] SupportedFiletypes = new[] { "*.pdf" };
+
+    private Window MainWindow => this.GetVisualRoot() as Window ?? throw new System.Exception("MainWindow not found");
+    #endregion Properties
 
     public MainView()
     {
         InitializeComponent();
     }
 
-    private async void LoadDocumentButton_OnClick(object? sender, RoutedEventArgs e)
-    {
-        LoadDocument(DocumentPathBox.Text);
-    }
-
+    #region Event Handlers
     private async void BrowseButton_Click(object? sender, RoutedEventArgs e)
     {
-        var pdfFilePath = await OpenPdfFileDialog(GetMainWindow());
+        var pdfFilePath = await OpenPdfFileDialog(MainWindow);
         if (!string.IsNullOrEmpty(pdfFilePath))
         {
             DocumentPathBox.Text = pdfFilePath;
         }
     }
 
-    private async Task<string?> OpenPdfFileDialog(TopLevel parent)
+    private void LoadDocumentButton_OnClick(object? sender, RoutedEventArgs e)
     {
+        var path = DocumentPathBox.Text;
+        if (!string.IsNullOrEmpty(path))
+        {
+            Model.LoadDocument(path);
+            ShowPage(0);
+        }
+    }
 
-        var filePickerOpenOptions = new FilePickerOpenOptions
+    private void ExtractButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var docPath = DocumentPathBox.Text;
+        if (!string.IsNullOrEmpty(docPath))
+        {
+            var resultTask = Model.ExtractAsync();
+        }
+    }
+    #endregion Event Handlers
+
+    private void ShowPage(int pageIndex)
+    {
+        var bitmap = Model.GetDocImage(pageIndex);
+        Dispatcher.UIThread.InvokeAsync(() => DocImage.Source = bitmap);
+    }
+
+    private static async Task<string?> OpenPdfFileDialog(TopLevel parent)
+    {
+        var options = new FilePickerOpenOptions
         {
             Title = "Open PDF File",
             FileTypeFilter = new List<FilePickerFileType>
             {
-                new FilePickerFileType("PDF Files")
+                new("PDF Files")
                 {
-                    Patterns = new[] { "*.pdf" }
+                    Patterns = SupportedFiletypes
                 }
             },
             AllowMultiple = false
         };
 
-        var files = await parent.StorageProvider.OpenFilePickerAsync(filePickerOpenOptions);
+        var files = await parent.StorageProvider.OpenFilePickerAsync(options);
 
-        if (files != null && files.Count > 0)
+        if (files.Count > 0)
         {
             return files[0].Path.LocalPath;
         }
@@ -64,19 +91,4 @@ public partial class MainView : UserControl
         return null;
     }
 
-    private void LoadDocument(string path)
-    {
-        var doc = new PdfDocument();
-        doc.LoadFromFile(path);
-
-        var imageStream = doc.SaveAsImage(0, PdfImageType.Bitmap);
-        var bmp = new Bitmap(imageStream);
-
-        Dispatcher.UIThread.InvokeAsync(() => DocImage.Source = bmp);
-    }
-
-    private Window GetMainWindow()
-    {
-        return this.GetVisualRoot() as Window ?? throw new System.Exception("MainWindow not found");
-    }
 }

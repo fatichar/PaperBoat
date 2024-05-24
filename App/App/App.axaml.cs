@@ -19,9 +19,16 @@ public partial class App : Application
 
     private static IServiceProvider ConfigureServices()
     {
+        var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        if (string.IsNullOrEmpty(envName))
+        {
+            throw new Exception("ASPNETCORE_ENVIRONMENT environment variable is not set.");
+        }
+
         var configuration = new ConfigurationBuilder()
             .AddEnvironmentVariables()
-            // .AddJsonFile("appsettings.json")
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{envName}.json", optional: true)
             .Build();
 
         var config = new AppConfig();
@@ -64,18 +71,19 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        var mainViewModel = Services.GetRequiredService<MainViewModel>();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel()
+                DataContext = mainViewModel
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = new MainViewModel()
+                DataContext = mainViewModel
             };
         }
 
