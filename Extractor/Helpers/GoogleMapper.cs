@@ -40,7 +40,35 @@ public static class GoogleMapper
 
     private static Rectangle GetRectangleFromPolygon(BoundingPoly boundingPoly)
     {
-        throw new NotImplementedException();
+        int left = 0;
+        int right = 0;
+        int top = 0;
+        int bottom = 0;
+
+        foreach (var vertex in boundingPoly.Vertices)
+        {
+            if (left > vertex.X)
+            {
+                left = vertex.X;
+            }
+
+            if (right < vertex.X)
+            {
+                right = vertex.X;
+            }
+
+            if (top > vertex.Y)
+            {
+                top = vertex.Y;
+            }
+
+            if (bottom < vertex.Y)
+            {
+                bottom = vertex.Y;
+            }
+        }
+
+        return CreateRectangle(top, left, bottom, right);
     }
 
     private static int ToConfidence(float? confidence)
