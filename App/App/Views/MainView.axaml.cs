@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -10,8 +11,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using Spire.Pdf;
-using Spire.Pdf.Graphics;
+using Serilog;
 
 namespace App.Views;
 
@@ -23,6 +23,7 @@ public partial class MainView : UserControl
     private static readonly string[] SupportedFiletypes = new[] { "*.pdf" };
 
     private Window MainWindow => this.GetVisualRoot() as Window ?? throw new System.Exception("MainWindow not found");
+
     #endregion Properties
 
     public MainView()
@@ -45,7 +46,9 @@ public partial class MainView : UserControl
         var path = DocumentPathBox.Text;
         if (!string.IsNullOrEmpty(path))
         {
+            Log.Information("Loading document: {Path}", path);
             Model.LoadDocument(path);
+            Log.Information("Loaded document: {Path}", path);
             ShowPage(0);
         }
     }
@@ -62,6 +65,7 @@ public partial class MainView : UserControl
 
     private void ShowPage(int pageIndex)
     {
+        Model.CurrentPageIndex = pageIndex;
         var bitmap = Model.GetDocImage(pageIndex);
         Dispatcher.UIThread.InvokeAsync(() => DocImage.Source = bitmap);
     }
@@ -91,4 +95,19 @@ public partial class MainView : UserControl
         return null;
     }
 
+    private void PdfNavigator_OnNext(object? sender, EventArgs e)
+    {
+        if (Model.CurrentPageIndex < Model.PageCount - 1)
+        {
+            ShowPage(Model.CurrentPageIndex + 1);
+        }
+    }
+
+    private void PdfNavigator_OnPrevious(object? sender, EventArgs e)
+    {
+        if (Model.CurrentPageIndex > 0)
+        {
+            ShowPage(Model.CurrentPageIndex - 1);
+        }
+    }
 }

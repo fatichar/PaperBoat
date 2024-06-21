@@ -4,7 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:app="clr-namespace:App"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:views="clr-namespace:App.Views"
+             mc:Ignorable="d"
+             d:DesignWidth="600" d:DesignHeight="1000"
              x:Class="App.Views.MainView"
              x:DataType="vm:MainViewModel">
     <UserControl.Resources>
@@ -16,7 +18,7 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <DockPanel>
+    <DockPanel Background="AliceBlue">
         <Menu x:Name="MenuBar" DockPanel.Dock="Top">
             <Menu.Styles>
             </Menu.Styles>
@@ -24,7 +26,7 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Vertical" HorizontalAlignment="Center"
                     Margin="0,0">
             <Grid ColumnDefinitions="600,Auto" ShowGridLines="True">
-                <TextBox Name="DocumentPathBox"></TextBox>
+                <TextBox Name="DocumentPathBox">TestData/NITKKR.pdf</TextBox>
                 <Button Grid.Column="1" Margin="10,0" Name="BrowseButton" Content="Browse" Click="BrowseButton_Click" />
             </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
@@ -45,11 +47,17 @@
                 </Button>
             </StackPanel>
         </StackPanel>
-        <StackPanel>
-            <Panel>
-                <Rectangle Height="700" Width="1000" Fill="LightGray" />
-                <Image Name="DocImage" Margin="20" Height="600" Width="800" />
-            </Panel>
-        </StackPanel>
+        <Grid Background="Azure" ColumnDefinitions="3*,*" ShowGridLines="True">
+            <DockPanel Grid.Column="0" Background="LightGray" Margin="20">
+                <views:PageNavigator DockPanel.Dock="Bottom" Name="PdfNavigator" Margin="20,5" Height="30" Width=""
+                                    Background="LightBlue"
+                                    CurrentPage="{Binding CurrentPageIndex, Mode=TwoWay}"
+                                    PageCount="{Binding PageCount, Mode=OneWay}"
+                                    OnPrevious="PdfNavigator_OnPrevious"
+                                    OnNext="PdfNavigator_OnNext"/>
+                <Image Name="DocImage" Margin="5" Height="" Width="" />
+            </DockPanel>
+            <Panel Grid.Column="1" Background="MintCream"></Panel>
+        </Grid>
     </DockPanel>
 </UserControl>

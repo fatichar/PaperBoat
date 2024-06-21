@@ -20,7 +20,7 @@ public partial class App : Application
     private static IServiceProvider ConfigureServices()
     {
         var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        if (string.IsNullOrEmpty(envName))
+        if (string.IsNullOrEmpty(envName) && !IsInDesignMode())
         {
             throw new Exception("ASPNETCORE_ENVIRONMENT environment variable is not set.");
         }
@@ -88,5 +88,10 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static bool IsInDesignMode()
+    {
+        return AppDomain.CurrentDomain.FriendlyName.Contains("Designer");
     }
 }

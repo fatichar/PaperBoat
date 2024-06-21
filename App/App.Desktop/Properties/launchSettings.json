@@ -3,6 +3,7 @@
   "profiles": {
     "App.Desktop": {
       "commandName": "Project",
+      "workingDirectory": "../../../../..",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
