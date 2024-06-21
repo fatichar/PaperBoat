@@ -2,14 +2,15 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:App.ViewModels"
-             xmlns:views="clr-namespace:App.Views"
              x:DataType="vm:MainViewModel"
              x:Name="PdfNavigator"
              >
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
         <Button Name="PreviousButton" Content="Prev"
                 Click="PreviousButton_OnClick"/>
-        <TextBlock Name="PageStateBlock" Text="{Binding ElementName=PdfNavigator, Path=DisplayText, FallbackValue='Page 0 of 0'}"/>
+        <TextBlock Name="PageStateBlock" VerticalAlignment="Center"
+        />
+                   <!-- Text="{Binding ElementName=PdfNavigator, Path=DisplayText, FallbackValue='Page 0 of 0'}" -->
         <Button Name="NextButton" Content="Next"
                 Click="NextButton_OnClick"/>
     </StackPanel>

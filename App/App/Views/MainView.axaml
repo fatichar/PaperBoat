@@ -26,7 +26,7 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Vertical" HorizontalAlignment="Center"
                     Margin="0,0">
             <Grid ColumnDefinitions="600,Auto" ShowGridLines="True">
-                <TextBox Name="DocumentPathBox">TestData/NITKKR.pdf</TextBox>
+                <TextBox Name="DocumentPathBox">TestData/Loan Application/Axis/axis1.pdf</TextBox>
                 <Button Grid.Column="1" Margin="10,0" Name="BrowseButton" Content="Browse" Click="BrowseButton_Click" />
             </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
@@ -47,8 +47,8 @@
                 </Button>
             </StackPanel>
         </StackPanel>
-        <Grid Background="Azure" ColumnDefinitions="3*,*" ShowGridLines="True">
-            <DockPanel Grid.Column="0" Background="LightGray" Margin="20">
+        <Grid IsVisible="{Binding IsDocumentLoaded}" Background="Azure" ColumnDefinitions="3*,*" ShowGridLines="false">
+            <DockPanel Grid.Column="0" Background="LightGray" Margin="0">
                 <views:PageNavigator DockPanel.Dock="Bottom" Name="PdfNavigator" Margin="20,5" Height="30" Width=""
                                     Background="LightBlue"
                                     CurrentPage="{Binding CurrentPageIndex, Mode=TwoWay}"
