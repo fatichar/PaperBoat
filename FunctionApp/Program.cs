@@ -8,7 +8,7 @@ var host = new HostBuilder()
     .ConfigureServices(services => {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-        services.AddSingleton<ExtractionService>();
+        services.AddSingleton<ExtractionService>();        
         services.AddLogging();
     })
     .Build();

@@ -1,0 +1,148 @@
+{
+	"DocumentName": "PAN Card",
+	"Version": "1.0",
+	"Groups": [
+		{
+			"Name": "IdentityDetails",
+			"Fields": [
+				{
+					"Name": "name",
+					"Id": "1",
+					"ValueType": "person",
+					"ExtractionAlgo": {
+						"Method": "KeyValue",
+						"Configuration": {
+							"Anchor": [
+								{
+									"Type": "Fixed",
+									"Position": "Top",
+									"Value": "INCOME TAX DEPARTMENT"
+								},
+								{
+									"Type": "ValueType",
+									"Position": "Bottom",
+									"Value": "person"
+								}
+							]
+						}
+					}
+				},
+				{
+					"Name": "parentOrSpouseName",
+					"Id": "2",
+					"ValueType": "person",
+					"ExtractionAlgo": {
+						"Method": "KeyValue",
+						"Configuration": {
+							"Anchor": [
+								{
+									"Type": "ValueType",
+									"Position": "Bottom",
+									"Value": "date"
+								},
+								{
+									"Type": "ValueType",
+									"Position": "Top",
+									"Value": "person"
+								}
+							]
+						}
+					}
+				},
+				{
+					"Name": "dateOfBirth",
+					"Id": "3",
+					"ValueType": "date",
+					"ExtractionAlgo": {
+						"Method": "KeyValue",
+						"Configuration": {
+							"Anchor": [
+								{
+									"Type": "Fixed",
+									"Position": "Bottom",
+									"Value": "Permanent Account Number"
+								},
+								{
+									"Type": "ValueType",
+									"Position": "Top",
+									"Value": "person"
+								}
+							]
+						}
+					}
+				},
+				{
+					"Name": "permanentAccountNumber",
+					"Id": "4",
+					"ValueType": "id",
+					"ExtractionAlgo": {
+						"Method": "KeyValue",
+						"Configuration": {
+							"Anchor": [
+								{
+									"Type": "Fixed",
+									"Position": "Bottom",
+									"Value": "Permanent Account Number"
+								},
+								{
+									"Type": "ValueType",
+									"Position": "Top",
+									"Value": "person"
+								}
+							]
+						}
+					}
+				},
+				{
+					"Name": "signature",
+					"Id": "5",
+					"ValueType": "signature",
+					"ExtractionAlgo": {
+						"Method": "KeyValue",
+						"Configuration": {
+							"Anchor": [
+								{
+									"Type": "Fixed",
+									"Position": "Bottom",
+									"Value": "Signature"
+								},
+								{
+									"Type": "Fixed",
+									"Position": "Top",
+									"Value": "Permanent Account Number"
+								},
+								{
+									"Type": "ValueType",
+									"Position": "Top",
+									"Value": "id"
+								}
+							]
+						}
+					}
+				},
+				{
+					"Name": "photo",
+					"Id": "6",
+					"ValueType": "photo",
+					"ExtractionAlgo": {
+						"Method": "KeyValue",
+						"Configuration": {
+							"Anchor": [
+								{
+									"Type": "Fixed",
+									"Position": "Left",
+									"Value": "Signature"
+								},
+								{
+									"Type": "Fixed",
+									"Position": "Left",
+									"Value": "Permanent Account Number"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}

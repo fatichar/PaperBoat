@@ -7,10 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.AI.DocumentIntelligence" Version="1.0.0-beta.1"/>
-        <PackageReference Include="Google.Cloud.DocumentAI.V1" Version="3.15.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3"/>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2"/>
+      <Compile Remove="NewFolder\**" />
+      <EmbeddedResource Remove="NewFolder\**" />
+      <None Remove="NewFolder\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Azure.AI.DocumentIntelligence" Version="1.0.0-beta.1" />
+        <PackageReference Include="Google.Cloud.DocumentAI.V1" Version="3.15.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     </ItemGroup>
 
     <ItemGroup>
@@ -21,11 +27,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\Model\ExtractionApi.proto" GrpcServices="None"/>
+        <Protobuf Include="..\Model\ExtractionApi.proto" GrpcServices="None" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Model\Model.csproj"/>
+        <ProjectReference Include="..\Model\Model.csproj" />
     </ItemGroup>
 
 </Project>

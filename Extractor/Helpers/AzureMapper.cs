@@ -9,7 +9,7 @@ using static Extractor.Helpers.ProtoExtensions;
 
 namespace Extractor.Helpers;
 
-internal class InClassName
+public class InClassName
 {
     public InClassName(AnalyzedDocument azureDoc, string docType)
     {

@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Text;
+using System.Text.Json;
 using Extractor.Helpers;
 using Google.Cloud.DocumentAI.V1;
 using Google.Protobuf;
@@ -22,6 +23,8 @@ public class GoogleDataExtractor(IConfiguration configuration) : IDataExtractor
         var googleDoc = PerformExtraction(engineConfig, request.Content, mimeType);
 
         var document = GoogleMapper.ConvertDocument(googleDoc);
+        var json = JsonSerializer.Serialize(googleDoc);
+        File.WriteAllText("jsonoutput.json", json);
         return document;
     }
 

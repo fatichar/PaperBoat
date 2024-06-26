@@ -10,7 +10,7 @@ public static class GoogleMapper
     internal static Extract ConvertDocument(Document googleDoc)
     {
         var groups = googleDoc.Entities
-            .Where(entity => entity.Confidence > 0.8)
+            //.Where(entity => entity.Confidence > 0.8)
             .Select(CreateFieldFromEntity)
             .Select(field => CreateGroup(field.Name, new List<Field> { field }, field.Confidence, field.Rect))
             .ToList();
