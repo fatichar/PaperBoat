@@ -34,4 +34,8 @@
         <ProjectReference Include="..\Model\Model.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Core\Model\Layout\" />
+    </ItemGroup>
+
 </Project>

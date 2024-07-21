@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Extractor.Core.Model
+namespace PaperBoat.Extractor.Core.Model
 {
     public class AlgoConfiguration
     {        
