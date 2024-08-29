@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using PaperBoat.Extractor.Core.Model;
 
 namespace Extractor.Helpers
 {
@@ -14,10 +15,10 @@ namespace Extractor.Helpers
     {
         public Template LoadTemplate(string documentName)
         {
-            var template = new Template();            
+            var template = new Template();
 
             string path = configuration["TemplatePath"] + "/" + documentName + ".json";
-            if (path != null) 
+            if (path != null)
             {
                 string templateText = File.ReadAllText(path);
                 template = JsonSerializer.Deserialize<Template>(templateText);

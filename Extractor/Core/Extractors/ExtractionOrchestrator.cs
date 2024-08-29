@@ -7,13 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PaperBoat.Extractor.Core.Model;
 
 namespace Extractor.Core.Extractors
 {
     internal class ExtractionOrchestrator(Document document, IConfiguration configuration, string DocType)
     {
         TemplateLoader templateLoader = new TemplateLoader(configuration);
-        
+
         public Template ExtractData()
         {
             var template = templateLoader.LoadTemplate(DocType);
@@ -45,7 +46,7 @@ namespace Extractor.Core.Extractors
 
         private void ExtractField(Field field, System.Drawing.Rectangle rect)
         {
-            
+
         }
 
     }
