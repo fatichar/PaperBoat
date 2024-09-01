@@ -1,53 +1,47 @@
-﻿using Extractor.Core.Model;
-using Extractor.Helpers;
+﻿using Extractor.Helpers;
 using Google.Cloud.DocumentAI.V1;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PaperBoat.Extractor.Core.Model;
+using PaperBoat.Model.Extracted;
 
-namespace Extractor.Core.Extractors
+namespace Extractor.Core.Extractors;
+
+internal class ExtractionOrchestrator(Document document, IConfiguration configuration, string docType)
 {
-    internal class ExtractionOrchestrator(Document document, IConfiguration configuration, string DocType)
+    TemplateLoader _templateLoader = new TemplateLoader(configuration);
+
+    public Template ExtractData()
     {
-        TemplateLoader templateLoader = new TemplateLoader(configuration);
+        var template = _templateLoader.LoadTemplate(docType);
 
-        public Template ExtractData()
+        FindGroups(document, template);
+
+        foreach (var group in template.Groups)
         {
-            var template = templateLoader.LoadTemplate(DocType);
-
-            FindGroups(document, template);
-
-            foreach (var group in template.Groups)
-            {
-                ExtractGroup(group);
-            }
-
-            return template;
+            ExtractGroup(group);
         }
 
-        private static void FindGroups(Document document, Template template)
-        {
-            //TODO: Algo for group detection
-            template.Groups[0].rect = new System.Drawing.Rectangle(0, 0,
-                    (int)document.Pages[0].Dimension.Width, (int)document.Pages[0].Dimension.Height);
-        }
+        return template;
+    }
 
-        private void ExtractGroup(Group group)
-        {
-            foreach (var field in group.Fields)
-            {
-                ExtractField(field, group.rect);
-            }
-        }
+    private static void FindGroups(Document document, Template template)
+    {
+        //TODO: Algo for group detection
+        template.Groups[0].Rect = new System.Drawing.Rectangle(0, 0,
+            (int)document.Pages[0].Dimension.Width, (int)document.Pages[0].Dimension.Height);
+    }
 
-        private void ExtractField(Field field, System.Drawing.Rectangle rect)
+    private void ExtractGroup(Group group)
+    {
+        foreach (var field in group.Fields)
         {
-
+            ExtractField(field, group.Rect);
         }
+    }
+
+    private void ExtractField(Field field, System.Drawing.Rectangle rect)
+    {
 
     }
+
 }

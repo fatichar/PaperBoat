@@ -1,5 +1,4 @@
 using Extractor.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 

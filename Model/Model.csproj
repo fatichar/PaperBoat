@@ -5,4 +5,7 @@
         <Nullable>enable</Nullable>
         <RootNamespace>PaperBoat.Model</RootNamespace>
     </PropertyGroup>
+    <ItemGroup>
+      <Folder Include="Template\" />
+    </ItemGroup>
 </Project>

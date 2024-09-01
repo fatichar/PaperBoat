@@ -1,5 +1,4 @@
-﻿using System.Buffers.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Extractor.Helpers;
 using Google.Cloud.DocumentAI.V1;
 using Google.Protobuf;
