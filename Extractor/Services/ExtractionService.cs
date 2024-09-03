@@ -1,8 +1,7 @@
-using Extractor.Services.DataExtractor;
 using Microsoft.Extensions.Configuration;
-using PaperBoat.Model;
+using PaperBoat.Extractor.Services.DataExtractor;
 
-namespace Extractor.Services;
+namespace PaperBoat.Extractor.Services;
 
 public class ExtractionService
 {

@@ -1,4 +1,4 @@
-﻿namespace PaperBoat.Extractor.Core.Model.Azure;
+﻿namespace PaperBoat.Extractor.Azure;
 
 public class AzureResult
 {

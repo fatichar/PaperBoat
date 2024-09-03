@@ -1,6 +1,4 @@
-﻿using PaperBoat.Model;
-
-namespace Extractor.Services.DataExtractor;
+﻿namespace PaperBoat.Extractor.Services.DataExtractor;
 
 public interface IDataExtractor
 {

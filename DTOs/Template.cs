@@ -1,4 +1,4 @@
-﻿namespace PaperBoat.Model.Extracted;
+﻿namespace PaperBoat;
 
 public class Template
 {

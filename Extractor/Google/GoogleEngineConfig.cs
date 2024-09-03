@@ -1,4 +1,4 @@
-﻿namespace Extractor.Helpers;
+﻿namespace PaperBoat.Extractor.Google;
 
 public record GoogleEngineConfig(
     string ProjectId,

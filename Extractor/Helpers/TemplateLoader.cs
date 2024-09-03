@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using System.Text.Json;
-using PaperBoat.Extractor.Core.Model;
-using PaperBoat.Model.Extracted;
+﻿using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
-namespace Extractor.Helpers;
+namespace PaperBoat.Extractor.Helpers;
 
 public class TemplateLoader(IConfiguration configuration)
 {

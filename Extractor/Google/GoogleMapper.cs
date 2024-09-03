@@ -1,9 +1,9 @@
-﻿using Google.Cloud.DocumentAI.V1;
-using PaperBoat.Model;
-using static Extractor.Helpers.ProtoExtensions;
-using ValueType = PaperBoat.Model.ValueType;
+﻿using System.Drawing;
+using Google.Cloud.DocumentAI.V1;
 
-namespace Extractor.Helpers;
+using static PaperBoat.Extractor.Helpers.ProtoExtensions;
+
+namespace PaperBoat.Extractor.Google;
 
 public static class GoogleMapper
 {
@@ -12,7 +12,7 @@ public static class GoogleMapper
         var groups = googleDoc.Entities
             //.Where(entity => entity.Confidence > 0.8)
             .Select(CreateFieldFromEntity)
-            .Select(field => CreateGroup(field.Name, new List<Field> { field }, field.Confidence, field.Rect))
+            .Select(field => CreateGroup(field.Name, new List<Field> { field }, field.Confidence))
             .ToList();
 
         var document = CreateExtract("", groups);
@@ -31,14 +31,14 @@ public static class GoogleMapper
         return new Field
         {
             Name = type,
-            ValueType = ValueType.String,
+            ValueType = System.ValueType.String,
             Value = value,
             Confidence = ToConfidence(entity.Confidence),
             Rect = rectangle
         };
     }
 
-    private static Rectangle GetRectangleFromPolygon(BoundingPoly boundingPoly)
+    private static Rectangle GetRectangleFromPolygon(global::Google.Cloud.DocumentAI.V1.BoundingPoly boundingPoly)
     {
         int left = 0;
         int right = 0;
@@ -68,7 +68,7 @@ public static class GoogleMapper
             }
         }
 
-        return CreateRectangle(top, left, bottom, right);
+        return new Rectangle((int)left, (int)top, (int)(right - left), (int)(bottom - top));
     }
 
     private static int ToConfidence(float? confidence)

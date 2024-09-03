@@ -1,10 +1,8 @@
-﻿using Extractor.Helpers;
-using Google.Cloud.DocumentAI.V1;
+﻿using Google.Cloud.DocumentAI.V1;
 using Microsoft.Extensions.Configuration;
-using PaperBoat.Extractor.Core.Model;
-using PaperBoat.Model.Extracted;
+using PaperBoat.Extractor.Helpers;
 
-namespace Extractor.Core.Extractors;
+namespace PaperBoat.Extractor.Extractors;
 
 internal class ExtractionOrchestrator(Document document, IConfiguration configuration, string docType)
 {

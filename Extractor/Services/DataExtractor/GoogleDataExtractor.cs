@@ -1,11 +1,10 @@
 ﻿using System.Text.Json;
-using Extractor.Helpers;
 using Google.Cloud.DocumentAI.V1;
 using Google.Protobuf;
 using Microsoft.Extensions.Configuration;
-using PaperBoat.Model;
+using PaperBoat.Extractor.Google;
 
-namespace Extractor.Services.DataExtractor;
+namespace PaperBoat.Extractor.Services.DataExtractor;
 
 public class GoogleDataExtractor(IConfiguration configuration) : IDataExtractor
 {

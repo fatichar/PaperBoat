@@ -1,9 +1,8 @@
-﻿using Google.Cloud.DocumentAI.V1;
-using System.Drawing;
-using PaperBoat.Model.Extracted;
+﻿using System.Drawing;
+using Google.Cloud.DocumentAI.V1;
 using static Google.Cloud.DocumentAI.V1.Document.Types;
 
-namespace Extractor.Core.Extractors;
+namespace PaperBoat.Extractor.Extractors;
 
 //This needs to be made generic to extract group snippet based on anchors
 internal class AnchorBasedExtractor(Field field, Document document, Rectangle rect)

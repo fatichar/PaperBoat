@@ -1,13 +1,9 @@
-﻿using Azure.AI.DocumentIntelligence;
-using PaperBoat.Model;
-using Field = PaperBoat.Model.Field;
-using Group = PaperBoat.Model.Group;
-using Rectangle = PaperBoat.Model.Rectangle;
-using ValueType = PaperBoat.Model.ValueType;
-using static Extractor.Helpers.RectangleExtensions;
-using static Extractor.Helpers.ProtoExtensions;
+﻿using System.Drawing;
+using Azure.AI.DocumentIntelligence;
+using Serilog;
+using static PaperBoat.Extractor.Helpers.ProtoExtensions;
 
-namespace Extractor.Helpers;
+namespace PaperBoat.Extractor.Azure;
 
 public class InClassName
 {
@@ -40,13 +36,12 @@ public static class AzureMapper
             && customerNameField.Type == DocumentFieldType.String)
         {
             nameFields.Add(CreateFieldFromDocumentField(customerNameField, "CustomerName"));
-            Console.WriteLine(
-                $"Customer Name: '{customerNameField.ValueString}', with confidence {customerNameField.Confidence}");
+            Log.Information($"Customer Name: '{customerNameField.ValueString}', with confidence {customerNameField.Confidence}");
         }
 
         var rectangle = GetRectangleForFieldsGroup(nameFields);
 
-        groups.Add(ProtoExtensions.CreateGroup("Names", nameFields, 0, rectangle));
+        groups.Add(CreateGroup("Names", nameFields, 0));
 
         if (inClassName.AzureDoc.Fields.TryGetValue("Items", out var itemsField)
             && itemsField.Type == DocumentFieldType.Array)
@@ -82,9 +77,7 @@ public static class AzureMapper
                     }
                 }
 
-                rectangle = GetRectangleForFieldsGroup(itemFields);
-
-                groups.Add(ProtoExtensions.CreateGroup("Item" + itemCount, itemFields, 0, rectangle));
+                groups.Add(CreateGroup("Item" + itemCount, itemFields, 0));
             }
         }
 
@@ -127,61 +120,43 @@ public static class AzureMapper
         }
 
         rectangle = GetRectangleForFieldsGroup(totalFields);
-        groups.Add(ProtoExtensions.CreateGroup("Total", totalFields, 0, rectangle));
+        groups.Add(CreateGroup("Total", totalFields, 0));
 
-        var document = ProtoExtensions.CreateExtract(inClassName.DocType, groups);
+        var document = CreateExtract(inClassName.DocType, groups);
         return document;
     }
 
     private static Field CreateAmountFieldFromDocumentField(DocumentField amountField, string name)
     {
-        var rectangle = GetRectangleFromPolygon(amountField.BoundingRegions);
+        var snippet = new Snippet(0, GetRectangleFromPolygon(amountField.BoundingRegions));
 
-        var value = amountField.ValueCurrency == null
+        var valueText = amountField.ValueCurrency == null
             ? amountField.Content
             : amountField.ValueCurrency.CurrencySymbol + amountField.ValueCurrency.Amount;
+        var value = new PaperBoat.Value(valueText, valueText, ToConfidence(amountField.Confidence));
 
-        return new Field
+        return new Field(name, ValueType.Currency, snippet)
         {
-            Name = name,
-            ValueType = ValueType.Currency,
             Value = value,
-            Confidence = ToConfidence(amountField.Confidence),
-            Rect = rectangle
+            Confidence = ToConfidence(amountField.Confidence)
         };
     }
 
-    private static int ToConfidence(float? confidence)
+    private static byte ToConfidence(float? confidence)
     {
-        if (confidence == null) return 0;
-
-        return (int)(confidence * 100);
-    }
-
-    private static Rectangle GetRectangleForFieldsGroup(List<Field> fields)
-    {
-        if (fields.Count == 0)
-        {
-            return EmptyRectangle;
-        }
-
-        var rects = fields.Select(f => f.Rect);
-        var groupRectangle = rects.Aggregate(fields[0].Rect, (current, rect) => current.Union(rect));
-
-        return groupRectangle;
+        return confidence == null ? (byte)0 : (byte)(confidence * 100);
     }
 
     private static Field CreateFieldFromDocumentField(DocumentField docField, string name)
     {
         var rectangle = GetRectangleFromPolygon(docField.BoundingRegions);
+        var snippet = new Snippet(0, rectangle);
+        var value = new PaperBoat.Value(docField.Content, docField.Content, ToConfidence(docField.Confidence));
 
-        var field = new Field
+        var field = new Field(name, ValueType.String, snippet)
         {
-            Name = name,
-            ValueType = ValueType.String,
-            Value = docField.ValueString,
             Confidence = ToConfidence(docField.Confidence),
-            Rect = rectangle
+            Value = value
         };
 
         return field;
@@ -191,12 +166,25 @@ public static class AzureMapper
     {
         if (regions.Count == 0)
         {
-            return EmptyRectangle;
+            return Rectangle.Empty;
         }
 
         var rects = regions.Select(r => GetBoundingRect(r.Polygon));
 
-        return rects.Aggregate((a, b) => a.Union(b));
+        return rects.Aggregate(Rectangle.Union);
+    }
+
+    private static Rectangle GetRectangleForFieldsGroup(IReadOnlyList<Field> fields)
+    {
+        if (fields.Count == 0)
+        {
+            return Rectangle.Empty;
+        }
+
+        var rects = fields.Select((Field f) => f.Snippet.Rect);
+        var groupRectangle = rects.Aggregate(Rectangle.Union);
+
+        return groupRectangle;
     }
 
     private static Rectangle GetBoundingRect(IReadOnlyList<float> polygon)
@@ -235,8 +223,6 @@ public static class AzureMapper
             }
         }
 
-        var rectangle = CreateRectangle(top, left, bottom, right);
-
-        return rectangle;
+        return new Rectangle((int)left, (int)top, (int)(right - left), (int)(bottom - top));
     }
 }

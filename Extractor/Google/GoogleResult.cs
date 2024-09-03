@@ -1,4 +1,4 @@
-﻿namespace PaperBoat.Extractor.Core.Model.Google;
+﻿namespace PaperBoat.Extractor.Google;
 
 public class GoogleResult
 {

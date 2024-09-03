@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+option csharp_namespace = "PaperBoat.Api";
+
+import "google/protobuf/timestamp.proto";
+
+service Extraction {
+  rpc Extract (ExtractionRequest) returns (ExtractionResponse);
+}
+
+message ExtractionRequest {
+  string file_type = 1;
+  string doc_type = 2;
+  string content = 3;
+}
+
+message ExtractionResponse {
+  Extract doc = 1;
+  ExtractionError error = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+message Extract {
+  repeated Group groups = 1;
+  int32 total_pages = 2;
+}
+
+message Group {
+  string name = 1;
+  repeated Field fields = 2;
+  int32 confidence = 3;
+  repeated PageInfo page_info = 4;
+}
+
+message Field {
+  string name = 1;
+  ValueType valueType = 2;
+  string value = 3;
+  int32 confidence = 4;
+  repeated RawChar raw_text = 5;
+  PageInfo page_info = 6;
+}
+
+message PageInfo {
+  int32 page_number = 1;
+  Rectangle rect = 2;
+}
+
+message RawChar {
+  string value = 1;
+  int32 confidence = 2;
+  Rectangle rect = 3;
+}
+
+message Rectangle {
+  float x = 1;
+  float y = 2;
+  float width = 3;
+  float height = 4;
+}
+
+enum ValueType {
+  STRING = 0;
+  INTEGER = 1;
+  DECIMAL = 2;
+  DATE = 3;
+  TIME = 4;
+  BOOLEAN = 5;
+  CURRENCY = 6;
+  PERCENTAGE = 7;
+  ACCOUNT_NUMBER = 8;
+  IBAN = 9;
+  SWIFT_CODE = 10;
+}
+
+enum ErrorType {
+  // General errors
+  UNKNOWN_ERROR = 0;
+  INTERNAL_ERROR = 1;
+
+  // Input-related errors
+  INVALID_INPUT = 2;
+  EMPTY_DOCUMENT = 3;
+  FILE_TOO_LARGE = 4;
+
+  // Document type and format errors
+  UNSUPPORTED_DOC_TYPE = 5;
+  UNSUPPORTED_FILE_FORMAT = 6;
+  ENCRYPTION_ERROR = 7;
+
+  // Quality and parsing errors
+  POOR_QUALITY = 8;
+  PARSING_ERROR = 9;
+
+  // Operation and service errors
+  OPERATION_TIMEOUT = 10;
+  SERVICE_UNAVAILABLE = 11;
+
+  // Permission and rate limiting errors
+  INSUFFICIENT_PERMISSIONS = 12;
+  RATE_LIMIT_EXCEEDED = 13;
+
+  // Network-related errors
+  NETWORK_ERROR = 14;
+}
+
+message ExtractionError {
+  string message = 1;
+  ErrorType error_type = 2;
+}

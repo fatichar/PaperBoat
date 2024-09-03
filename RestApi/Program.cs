@@ -1,4 +1,4 @@
-using Extractor.Services;
+using PaperBoat.Extractor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

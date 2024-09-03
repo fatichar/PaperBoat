@@ -1,10 +1,9 @@
 ﻿using Azure;
 using Azure.AI.DocumentIntelligence;
-using Extractor.Helpers;
 using Microsoft.Extensions.Configuration;
-using PaperBoat.Model;
+using PaperBoat.Extractor.Azure;
 
-namespace Extractor.Services.DataExtractor;
+namespace PaperBoat.Extractor.Services.DataExtractor;
 
 public class AzureDataExtractor(IConfiguration configuration) : IDataExtractor
 {

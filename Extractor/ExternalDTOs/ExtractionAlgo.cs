@@ -1,4 +1,4 @@
-﻿namespace PaperBoat.Extractor.Core.Model;
+﻿namespace PaperBoat.Extractor.ExternalDTOs;
 
 public class ExtractionAlgo
 {

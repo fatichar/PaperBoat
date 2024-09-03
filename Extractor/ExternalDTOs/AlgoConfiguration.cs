@@ -1,6 +1,4 @@
-﻿using PaperBoat.Model.Extracted;
-
-namespace PaperBoat.Extractor.Core.Model;
+﻿namespace PaperBoat.Extractor.ExternalDTOs;
 
 public class AlgoConfiguration
 {
