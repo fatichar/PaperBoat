@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using PaperBoat;
 using PaperBoat.Extractor.Services;
-using PaperBoat.Model;
 
 namespace RestApi.Controllers;
 

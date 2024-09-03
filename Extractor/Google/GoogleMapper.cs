@@ -12,7 +12,11 @@ public static class GoogleMapper
         var groups = googleDoc.Entities
             //.Where(entity => entity.Confidence > 0.8)
             .Select(CreateFieldFromEntity)
-            .Select(field => CreateGroup(field.Name, new List<Field> { field }, field.Confidence))
+            .Select(field =>
+                CreateGroup(
+                    field.Name,
+                    new List<Field> { field },
+                    field.Value?.Confidence ?? 0))
             .ToList();
 
         var document = CreateExtract("", groups);
@@ -21,20 +25,19 @@ public static class GoogleMapper
 
     private static Field CreateFieldFromEntity(Document.Types.Entity entity)
     {
-        var value = entity.MentionText ?? "";
-        var type = entity.Type ?? "";
+        var valueText = entity.MentionText ?? "";
+        var name = entity.Type ?? "";
         var rectangle = new Rectangle();
         if (entity.PageAnchor != null && entity.PageAnchor.PageRefs.Count > 0)
         {
             rectangle = GetRectangleFromPolygon(entity.PageAnchor.PageRefs[0].BoundingPoly);
         }
-        return new Field
+        var snippet = new Snippet(0, rectangle);
+        var value = new PaperBoat.Value(valueText, valueText, ToConfidence(entity.Confidence));
+
+        return new Field(name, ValueType.String, snippet)
         {
-            Name = type,
-            ValueType = System.ValueType.String,
-            Value = value,
-            Confidence = ToConfidence(entity.Confidence),
-            Rect = rectangle
+            Value = value
         };
     }
 
@@ -71,10 +74,10 @@ public static class GoogleMapper
         return new Rectangle((int)left, (int)top, (int)(right - left), (int)(bottom - top));
     }
 
-    private static int ToConfidence(float? confidence)
+    private static byte ToConfidence(float? confidence)
     {
         if (confidence == null) return 0;
 
-        return (int)(confidence * 100);
+        return (byte)(confidence * 100);
     }
 }

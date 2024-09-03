@@ -137,8 +137,7 @@ public static class AzureMapper
 
         return new Field(name, ValueType.Currency, snippet)
         {
-            Value = value,
-            Confidence = ToConfidence(amountField.Confidence)
+            Value = value
         };
     }
 
@@ -155,7 +154,6 @@ public static class AzureMapper
 
         var field = new Field(name, ValueType.String, snippet)
         {
-            Confidence = ToConfidence(docField.Confidence),
             Value = value
         };
 

@@ -51,7 +51,7 @@ public class GoogleDataExtractor(IConfiguration configuration) : IDataExtractor
         );
     }
 
-    private Google.Cloud.DocumentAI.V1.Document PerformExtraction(
+    private Document PerformExtraction(
         GoogleEngineConfig config,
         string fileData,
         string mimeType

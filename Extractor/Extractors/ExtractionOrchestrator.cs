@@ -25,15 +25,15 @@ internal class ExtractionOrchestrator(Document document, IConfiguration configur
     private static void FindGroups(Document document, Template template)
     {
         //TODO: Algo for group detection
-        template.Groups[0].Rect = new System.Drawing.Rectangle(0, 0,
-            (int)document.Pages[0].Dimension.Width, (int)document.Pages[0].Dimension.Height);
+        // template.Groups[0].Rect = new System.Drawing.Rectangle(0, 0,
+        //     (int)document.Pages[0].Dimension.Width, (int)document.Pages[0].Dimension.Height);
     }
 
     private void ExtractGroup(Group group)
     {
         foreach (var field in group.Fields)
         {
-            ExtractField(field, group.Rect);
+            // ExtractField(field, group.Rect);
         }
     }
 
