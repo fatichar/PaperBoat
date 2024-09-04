@@ -90,8 +90,5 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private static bool IsInDesignMode()
-    {
-        return AppDomain.CurrentDomain.FriendlyName.Contains("Designer");
-    }
+    private static bool IsInDesignMode() => AppDomain.CurrentDomain.FriendlyName.Contains("Designer");
 }

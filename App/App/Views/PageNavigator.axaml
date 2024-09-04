@@ -8,6 +8,7 @@
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
         <Button Name="PreviousButton" Content="Prev"
                 Click="PreviousButton_OnClick"/>
+
         <TextBlock Name="PageStateBlock" VerticalAlignment="Center"
         />
                    <!-- Text="{Binding ElementName=PdfNavigator, Path=DisplayText, FallbackValue='Page 0 of 0'}" -->

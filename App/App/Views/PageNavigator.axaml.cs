@@ -80,10 +80,6 @@ public partial class PageNavigator : UserControl
     private void PreviousButton_OnClick(object? sender, RoutedEventArgs e)
     {
         OnPrevious?.Invoke(this, e);
-        if (CurrentPage > 0)
-        {
-            _currentPage--;
-        }
     }
 
     private void NextButton_OnClick(object? sender, RoutedEventArgs e)

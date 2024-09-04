@@ -48,9 +48,17 @@ public partial class MainViewModel(AppConfig appConfig) : ViewModelBase
 
     public void LoadDocument(string path)
     {
-        CurrentDoc = new PdfDocument(path);
-        PageCount = CurrentDoc?.Pages.Count ?? 0;
-        IsDocumentLoaded = true;
+        try
+        {
+            CurrentDoc = new PdfDocument(path);
+            PageCount = CurrentDoc?.Pages.Count ?? 0;
+            IsDocumentLoaded = true;
+        }
+        catch (PdfiumException e)
+        {
+            var workingDir = Directory.GetCurrentDirectory();
+            Log.Error(e, "Error loading document: {WorkingDir}", workingDir);
+        }
     }
 
     public Bitmap GetDocImage(int pageIndex)
